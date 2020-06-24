@@ -2,16 +2,19 @@ package poly.bedtech;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import poly.bedtech.commands.CommandBonjour;
+
 public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		System.out.println("Le plugin viens de s'allumer !");
+		System.out.println("Le plugin vient de s'allumer !");
+		getCommand("bonjour").setExecutor(new CommandBonjour());
 	}
 	
 	@Override
 	public void onDisable() {
-		System.out.println("Le plugin viens de s'eteindre");
+		System.out.println("Le plugin vient de s'eteindre");
 	}
 	
 }
