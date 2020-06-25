@@ -8,6 +8,7 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		saveDefaultConfig();
 		System.out.println("Le plugin vient de s'allumer !");
 		getCommand("bonjour").setExecutor(new CommandBonjour());
 	}
