@@ -2,7 +2,6 @@ package poly.bedtech;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import poly.bedtech.commands.CommandArena;
 import poly.bedtech.commands.CommandBonjour;
 import poly.bedtech.commands.CommandLima;
 

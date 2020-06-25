@@ -1,6 +1,5 @@
 package poly.bedtech.commands;
 
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 public abstract class SubCommand {
