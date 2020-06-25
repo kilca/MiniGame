@@ -1,8 +1,12 @@
 name: BedTech
 version: 1.0
 author: Nous
-main: poly.bedtech.Main
+main: poly.bedtech.LimaMain
 commands:
   bonjour:
     description: Hello World
     permission: bonjour.use
+  lima:
+    description: Lima command
+    permission: lima.use
+  
