@@ -6,6 +6,7 @@ import poly.bedtech.arena.ArenaEditGUI;
 import poly.bedtech.arena.ArenaManager;
 import poly.bedtech.commands.CommandBonjour;
 import poly.bedtech.commands.CommandLima;
+import poly.bedtech.commands.CommandNPC;
 
 public class LimaMain extends JavaPlugin {
 
@@ -33,6 +34,7 @@ public class LimaMain extends JavaPlugin {
 		
 		getCommand("bonjour").setExecutor(new CommandBonjour());
 		getCommand("lima").setExecutor(cl);
+		getCommand("npc").setExecutor(new CommandNPC());
 		
 		initListeners();
 		
