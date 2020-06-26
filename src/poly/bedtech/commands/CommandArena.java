@@ -1,8 +1,17 @@
 package poly.bedtech.commands;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import java.util.Arrays;
 
+import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import poly.bedtech.arena.Arena;
+import poly.bedtech.arena.ArenaEditGUI;
 import poly.bedtech.arena.ArenaManager;
 
 public class CommandArena extends SubCommand {
@@ -16,22 +25,91 @@ public class CommandArena extends SubCommand {
 		if (sender instanceof Player){
 			player = (Player)sender;
 		}
-		if (args[0].length() > 0) {
+		
+		String arg0 = "";
+		String arg1 = null;
+		
+		if (args.length > 0)
+			arg0 = args[0];
+		
+		if (args.length > 1)
+			arg1 = args[1];
 			
 			System.out.println(args[0]);
 			
-			switch(args[0]) {
-				case "save":
-					ArenaManager.saveArena(player, "test");
-					break;
-				case "load":
-					ArenaManager.loadArena(player, "test");
-					break;
+		switch(arg0) {
+		
+			case "help":
+				sender.sendMessage("list");
+				sender.sendMessage("create [name]");
+				sender.sendMessage("edit [name]");
+				sender.sendMessage("edititem [name]");
+				sender.sendMessage("remove [name]");
+			break;
+		
+			case "list":
+				ArenaManager.giveList(sender);
+				break;
+		
+			case "create":
+				if (arg1 != null) {
+					ArenaManager.addArena(new Arena(arg1));
+				}
+				break;
+			case "edit":
+				if (arg1 != null) {
+					Arena ar = ArenaManager.getArenaByName(arg1);
+					if (ar == null) {
+						sender.sendMessage("arena not found");
+						return;	
+					}
+					
+					
+					
+					
+				}
+				break;
+			case "edititem":
+				
+				System.out.println(arg1);
+				
+				if (arg1 != null) {
+					Arena ar = ArenaManager.getArenaByName(arg1);
+					if (ar == null) {
+						sender.sendMessage("arena not found");
+						return;	
+					}
+					
+					
+					ArenaEditGUI.giveEditItem(player,ar);
+					
+				}
+				
+				break;
+					
+			case "remove":
+				
+				if (arg1 != null) {
+					Arena ar = ArenaManager.getArenaByName(arg1);
+					if (ar == null) {
+						sender.sendMessage("arena not found");
+						return;	
+					}
+					
+					
+					
+					
+				}
+
+				break;
+					
 			
-			}
+			
+			
 		}
 	}
 
+	
 	@Override
 	public String name() {
 		// TODO Auto-generated method stub

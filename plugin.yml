@@ -2,6 +2,7 @@ name: BedTech
 version: 1.0
 author: Nous
 main: poly.bedtech.LimaMain
+api-version: 1.13
 commands:
   bonjour:
     description: Hello World
