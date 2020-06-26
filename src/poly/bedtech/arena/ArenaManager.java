@@ -3,8 +3,10 @@ package poly.bedtech.arena;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -22,18 +24,39 @@ public class ArenaManager {
 	//A Tester
 	public static void setupConfigs(LimaMain lima) {
 		
+		if (lima.getConfig().getConfigurationSection("arenas") == null) {
+			return;
+		}
+		
 		for(String s : lima.getConfig().getConfigurationSection("arenas").getKeys(false)) {
 			
-			Arena ar = new Arena(s);
-			//todo check
-			//if (lima.getConfig().contains(a))
-			double loc1x = lima.getConfig().getConfigurationSection("arenas").getDouble(s+"loc1.x");
-			double loc1y = lima.getConfig().getConfigurationSection("arenas").getDouble(s+"loc1.x");
-			double loc1z = lima.getConfig().getConfigurationSection("arenas").getDouble(s+"loc1.x");
+			String name = s;
+			World world;
+			Location l1 = null;
+			Location l2 = null;
 			
-			double loc2x = lima.getConfig().getConfigurationSection("arenas").getDouble(s+"loc2.x");
-			double loc2y = lima.getConfig().getConfigurationSection("arenas").getDouble(s+"loc2.x");
-			double loc2z = lima.getConfig().getConfigurationSection("arenas").getDouble(s+"loc2.x");
+			world = Bukkit.getServer().getWorld(lima.getConfig().getConfigurationSection("arenas").getString(s+".world"));
+			
+			
+			boolean haveLoc1 = lima.getConfig().getConfigurationSection("arenas").isSet(s+".loc1.x");
+			boolean haveLoc2 = lima.getConfig().getConfigurationSection("arenas").isSet(s+".loc2.x");
+			
+			if (haveLoc1) {
+				double loc1x = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".loc1.x");
+				double loc1y = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".loc1.y");
+				double loc1z = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".loc1.z");
+				
+				l1 = new Location(world,loc1x,loc1y,loc1z);
+			}
+			if (haveLoc2) {
+				double loc2x = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".loc2.x");
+				double loc2y = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".loc2.y");
+				double loc2z = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".loc2.z");
+				
+				l2 = new Location(world,loc2x,loc2y,loc2z);
+			}
+			
+			addArena(new Arena(name,l1,l2,world));
 			
 			//System.out.println(loc1x);
 			
@@ -57,13 +80,17 @@ public class ArenaManager {
 	
 	public static void giveList(CommandSender sender) {
 		
-		for(Arena a : arenas) {
-			sender.sendMessage(a.getName());
+		for(int i=0;i<arenas.size();i++) {
+			sender.sendMessage(i+")"+arenas.get(i).getName());
+			
 		}
 		
 	}
 	
 	public static void saveArena(Player p, Arena ar) {
+		
+		if (ar.loc1 == null || ar.loc2 == null)
+			p.sendMessage("Error, location not defined");
 		
 		if (ar.loc1.distance(ar.loc2) > maxArenaDist) {
 			p.sendMessage("Error, location distance too high");
@@ -80,17 +107,35 @@ public class ArenaManager {
 	}
 	
 	public static void loadArena(Player p, Arena ar) {
-
+		
+		if (ar.loc1 == null || ar.loc2 == null)
+			p.sendMessage("Error, location not defined");
+		
 		Material[][][] m = StructureAPI.load(ar.name);
-		StructureAPI.paste(m,ar.loc1);
+		
+		if (m == null) {
+			p.sendMessage("schematic error");
+		}
+		
+		Location block = ar.loc1;
+		Location block2= ar.loc2;
+		
+        double minX = block.getX() < block2.getX() ? block.getX() : block2.getX();
+        double minZ = block.getZ() < block2.getZ() ? block.getZ() : block2.getZ();
+        double minY = block.getY() < block2.getY() ? block.getY() : block2.getY();
+		
+		
+        Location tempLocation = new Location(ar.loc1.getWorld(),minX,minY,minZ);
+        
+		StructureAPI.paste(m,tempLocation);
 		p.sendMessage("arena loaded");
 	}
 	
 	
-	public static void addArena(Arena arena) {
+	public static boolean addArena(Arena arena) {
 		for(Arena a : arenas) {
 			if (a.name.equals(arena.name)) {
-				return;
+				return false;
 			}
 			
 		}
@@ -98,6 +143,7 @@ public class ArenaManager {
 		arena.saveConfig(LimaMain.INSTANCE);
 		
 		arenas.add(arena);
+		return true;
 	}
 	
 	public void joinArena(Player p) {

@@ -53,7 +53,11 @@ public class CommandArena extends SubCommand {
 		
 			case "create":
 				if (arg1 != null) {
-					ArenaManager.addArena(new Arena(arg1));
+					if (ArenaManager.addArena(new Arena(arg1,player.getWorld()))) {
+						player.sendMessage("arena created");
+					}else {
+						player.sendMessage("can't create arena");
+					}
 				}
 				break;
 			case "edit":

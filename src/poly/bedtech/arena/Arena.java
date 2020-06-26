@@ -1,6 +1,7 @@
 package poly.bedtech.arena;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 
 import poly.bedtech.LimaMain;
 
@@ -14,17 +15,24 @@ public class Arena {
 	public Location loc2;
 	
 	//mettre Equipes
+	
+	public boolean isOpen;
 	public boolean isStarted;
 	
-	public Arena(String name) {
+	public World world;
+	
+	public Arena(String name, World world) {
 		
 		this.name = name;
+		this.world = world;
 	}
 	
-	public Arena(String name, Location l1, Location l2) {
+	public Arena(String name, Location l1, Location l2, World world) {
 		this.name = name;
 		this.loc1 = l1;
 		this.loc2 = l2;
+		
+		this.world = world;
 	}
 	
 	public String getName() {
@@ -35,6 +43,8 @@ public class Arena {
 		String def = "arenas."+name+".";
 		
 		limInstance.getConfig().set(def+"name", this.name);
+		
+		limInstance.getConfig().set(def+"world", this.world.getName());
 		
 		if (loc1 != null) {
 			limInstance.getConfig().set(def+"loc1.x", loc1.getX());

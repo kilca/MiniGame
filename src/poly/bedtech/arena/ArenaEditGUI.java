@@ -1,8 +1,12 @@
 package poly.bedtech.arena;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -17,6 +21,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import poly.bedtech.LimaMain;
+
 public class ArenaEditGUI implements Listener {
 
 	
@@ -28,7 +34,8 @@ public class ArenaEditGUI implements Listener {
 	private final String saveName = "Save";
 	private final String loadName = "Load";
 	
-	
+	//peut etre pas une bonne idée la boussole car marche pas avec WorldEdit
+
 	private void showUI(Player player, Arena a) {
 		
 		Inventory inv = Bukkit.createInventory(null, 18,a.getName());
@@ -46,11 +53,31 @@ public class ArenaEditGUI implements Listener {
 		ItemStack itemInfo = new ItemStack(Material.OAK_SIGN);
 		ItemMeta itemInfoM = itemInfo.getItemMeta();
 		itemInfoM.setDisplayName(infoName);
-		itemInfoM.setLore(
-				Arrays.asList("name:"+a.getName(),
-								"pos1:"+a.loc1,
-								"pos2:"+a.loc2
-								));
+		
+		
+		List<String> lore = new ArrayList<String>();
+		lore.add("name:"+a.getName());
+		if (a.loc1 != null) {
+			int x = (int)a.loc1.getBlockX();
+			int y = (int)a.loc1.getBlockY();
+			int z = (int)a.loc1.getBlockZ();
+			lore.add("loc1:"+x+","+y+","+z);
+		}else {
+			lore.add("loc1:null");
+		}
+		if (a.loc2 != null) {
+			int x = (int)a.loc2.getBlockX();
+			int y = (int)a.loc2.getBlockY();
+			int z = (int)a.loc2.getBlockZ();
+			lore.add("loc2:"+x+","+y+","+z);
+		}else {
+			lore.add("loc2:null");
+		}
+		lore.add("world:"+a.world.getName());
+		
+		
+		itemInfoM.setLore(lore);
+		
 		itemInfo.setItemMeta(itemInfoM);
 		
 		
@@ -67,6 +94,8 @@ public class ArenaEditGUI implements Listener {
 		inv.setItem(0, itemPos1);
 		inv.setItem(1, itemPos2);
 		inv.setItem(2, itemInfo);
+		inv.setItem(3, itemSave);
+		inv.setItem(4, itemLoad);
 		
 		player.openInventory(inv);
 		
@@ -108,6 +137,8 @@ public class ArenaEditGUI implements Listener {
 		
 		
 		}
+		
+		ar.saveConfig(LimaMain.INSTANCE);
 		
 		event.setCancelled(true);
 		
