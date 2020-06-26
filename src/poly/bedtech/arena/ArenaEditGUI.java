@@ -6,8 +6,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.World;
+import org.bukkit.WorldBorder;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,11 +19,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.Vector;
 
 import poly.bedtech.LimaMain;
 
@@ -33,6 +39,8 @@ public class ArenaEditGUI implements Listener {
 	private final String infoName = "Arena info";
 	private final String saveName = "Save";
 	private final String loadName = "Load";
+	
+	private final String borderName = "Show/Hide Border";
 	
 	//peut etre pas une bonne idée la boussole car marche pas avec WorldEdit
 
@@ -91,15 +99,79 @@ public class ArenaEditGUI implements Listener {
 		itemLoadM.setDisplayName(loadName);
 		itemLoad.setItemMeta(itemLoadM);
 		
+		Material borderMat = (a.borderRun != null ? Material.REDSTONE : Material.GLOWSTONE_DUST);
+		ItemStack itemBorder = new ItemStack(borderMat);
+		ItemMeta itemBorderM = itemBorder.getItemMeta();
+		itemBorderM.setDisplayName(borderName);
+		itemBorderM.setLore(Arrays.asList("wait 1 sec after remove border"));
+		itemBorder.setItemMeta(itemBorderM);
+		
 		inv.setItem(0, itemPos1);
 		inv.setItem(1, itemPos2);
 		inv.setItem(2, itemInfo);
 		inv.setItem(3, itemSave);
 		inv.setItem(4, itemLoad);
+		inv.setItem(5, itemBorder);
 		
 		player.openInventory(inv);
 		
 	}
+	
+	
+	
+	public void drawLine(
+	        /* Would be your orange wool */Location point1, 
+	        /* Your white wool */ Location point2,
+	        /*Space between each particle*/double space
+	        ) {
+	 
+	    World world = point1.getWorld();
+
+	 
+	    /*Distance between the two particles*/
+	    double distance = point1.distance(point2);
+	 
+	    /* The points as vectors */
+	    Vector p1 = point1.toVector();
+	    Vector p2 = point2.toVector();
+	 
+	    /* Subtract gives you a vector between the points, we multiply by the space*/
+	    Vector vector = p2.clone().subtract(p1).normalize().multiply(space);
+	 
+	    /*The distance covered*/
+	    double covered = 0;
+	 
+	    /* We run this code while we haven't covered the distance, we increase the point by the space every time*/
+	    for (; covered < distance; p1.add(vector)) {
+	        /*Spawn the particle at the point*/
+	        world.spawnParticle(Particle.REDSTONE, p1.getX(), p1.getY(), p1.getZ(), 1);
+	 
+	        /* We add the space covered */
+	        covered += space;
+	    }
+	}
+	
+
+	/*
+	@EventHandler
+	public void onItemHeldChange(PlayerItemHeldEvent event) {
+		
+		Player player = (Player) event.getPlayer();
+		ItemStack current = player.getInventory().getItem(event.getNewSlot());;
+		
+		if (current == null) return;
+	
+		if (current.getItemMeta().getLore() == null)
+			return;
+		Arena ar = ArenaManager.getArenaByName(current.getItemMeta().getLore().get(1));
+		if (ar == null || ar.loc1 == null || ar.loc2 == null)
+			return;
+		
+		showRegion(ar.loc1,ar.loc2);
+		
+	
+	}
+	*/
 	
 	@EventHandler
 	public void onClick(InventoryClickEvent event) {
@@ -132,6 +204,9 @@ public class ArenaEditGUI implements Listener {
 			case loadName:
 				ArenaManager.loadArena(player, ar);
 				break;
+			case borderName:
+				ar.changeBorder();
+				break;
 			default:
 				return;
 		
@@ -139,6 +214,8 @@ public class ArenaEditGUI implements Listener {
 		}
 		
 		ar.saveConfig(LimaMain.INSTANCE);
+		
+		showUI(player,ar);
 		
 		event.setCancelled(true);
 		
