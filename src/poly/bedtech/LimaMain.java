@@ -8,6 +8,8 @@ import poly.bedtech.commands.CommandBonjour;
 import poly.bedtech.commands.CommandLima;
 import poly.bedtech.weapons.WeaponEvent;
 import poly.bedtech.weapons.WeaponManager;
+import poly.bedtech.commands.CommandNPC;
+import poly.bedtech.npc.ClientNPCPacketListener;
 
 public class LimaMain extends JavaPlugin {
 
