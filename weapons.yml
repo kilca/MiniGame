@@ -1,0 +1,40 @@
+guns:
+  Bazooka:
+    id: STICK
+    projectile: SNOWBALL
+    sound: TRUC
+    velocity: 2.5
+    damage: 5
+    destruct: true
+    radius: 5
+  Shotgun:
+    id: Material.IRON_HOE
+    projectile: SNOWBALL
+    sound: TRUC
+    velocity: 3.0
+    damage: 2
+    destruct: true
+    radius: 1
+  Sniper:
+    id: IRON_HORSE_ARMOR
+    projectile: SNOWBALL
+    sound: TRUC
+    velocity: 10.0
+    damage: 10
+    destruct: false
+    radius: 0
+melee:
+  Poke:
+  FirePunch:
+grenade:
+  Dynamite:
+  Molotov:
+  Coconut:
+landmine:
+  Mine:
+  Trap:
+utilities:
+  Elytra:
+  Block:
+  
+  

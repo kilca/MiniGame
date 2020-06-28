@@ -6,27 +6,34 @@ import poly.bedtech.arena.ArenaEditGUI;
 import poly.bedtech.arena.ArenaManager;
 import poly.bedtech.commands.CommandBonjour;
 import poly.bedtech.commands.CommandLima;
+import poly.bedtech.weapons.WeaponEvent;
+import poly.bedtech.weapons.WeaponManager;
 
 public class LimaMain extends JavaPlugin {
 
+	//https://www.spigotmc.org/threads/multiple-config.56384/
+	
     public static LimaMain INSTANCE;
 	
     private void initListeners() {
     	
     	getServer().getPluginManager().registerEvents(new ArenaEditGUI(), this);
-    	
+    	getServer().getPluginManager().registerEvents(new WeaponEvent(), this);
     }
     
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
+		saveResource("weapons.yml",true);
 		
 		System.out.println("Le plugin vient de s'allumer !");
 		
 		INSTANCE = this;
 		StructureAPI.plugin = this;
 		
+		
 		ArenaManager.setupConfigs(this);
+		WeaponManager.loadWeapons(this);
 		
 		CommandLima cl = new CommandLima();
 		cl.setup();

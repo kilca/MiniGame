@@ -21,7 +21,7 @@ public class CommandLima implements CommandExecutor{
 		
 	
 		subCommands.put("arena", new CommandArena());
-		
+		subCommands.put("weapon", new CommandWeapon());
 	}
 	
 	public SubCommand getCommand(String s) {
