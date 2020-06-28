@@ -1,5 +1,6 @@
 package poly.bedtech.npc;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -29,6 +30,9 @@ import net.minecraft.server.v1_15_R1.WorldServer;
 import poly.bedtech.LimaMain;
 
 public class NPC {
+	
+	private static ArrayList<EntityPlayer> listNPC = new ArrayList<EntityPlayer>();
+	
 	private Location location;
 	private String name;
 	private GameProfile gameProfile;
@@ -36,6 +40,34 @@ public class NPC {
 	private String textureID;
 	private String signatureID;
 	
+	public static ArrayList<EntityPlayer> getListNPC() {
+		return listNPC;
+	}
+	
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public GameProfile getGameProfile() {
+		return gameProfile;
+	}
+
+	public EntityPlayer getEntityNPC() {
+		return entityNPC;
+	}
+
 	public NPC(Location location, String name) {
 		this.location = location;
 		this.name = name;
@@ -53,9 +85,34 @@ public class NPC {
 		
 		entityNPC = new EntityPlayer(nmsServer, nmsWorld, gameProfile, new PlayerInteractManager(nmsWorld));
 		entityNPC.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+		listNPC.add(entityNPC);
 	}
 	
-	public void showNPC(Player player) {
+	public void showNPC() {
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			PlayerConnection plConnection = ((CraftPlayer) player).getHandle().playerConnection;
+			
+			plConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityNPC));
+			plConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(entityNPC));
+			
+			new BukkitRunnable() {
+		        @Override
+		        public void run() {
+		        	plConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, entityNPC));
+		        }
+		    }.runTaskLater(LimaMain.INSTANCE, 10); 
+			
+			plConnection.sendPacket(new PacketPlayOutEntityHeadRotation(entityNPC, (byte) (entityNPC.yaw * 256 / 360)));
+			plConnection.sendPacket(new PacketPlayOutEntity.PacketPlayOutEntityLook(entityNPC.getId(), (byte)(entityNPC.yaw * 256 / 360), (byte)(entityNPC.pitch * 256 / 360), true));
+	
+			// DataWatcher to apply second layer of skin of the NPC to the client
+			DataWatcher watcher = entityNPC.getDataWatcher();
+			watcher.set(new DataWatcherObject<>(16, DataWatcherRegistry.a), (byte)127);
+		    plConnection.sendPacket(new PacketPlayOutEntityMetadata(entityNPC.getId(), watcher, true));
+		}
+	}
+	
+	public static void showNPC(Player player, EntityPlayer entityNPC) {
 		PlayerConnection plConnection = ((CraftPlayer) player).getHandle().playerConnection;
 		
 		plConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityNPC));
@@ -75,6 +132,6 @@ public class NPC {
 		DataWatcher watcher = entityNPC.getDataWatcher();
 		watcher.set(new DataWatcherObject<>(16, DataWatcherRegistry.a), (byte)127);
 	    plConnection.sendPacket(new PacketPlayOutEntityMetadata(entityNPC.getId(), watcher, true));
-        
 	}
+	
 }
