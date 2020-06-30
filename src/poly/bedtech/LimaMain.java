@@ -21,6 +21,9 @@ public class LimaMain extends JavaPlugin {
     	
     	getServer().getPluginManager().registerEvents(new ArenaEditGUI(), this);
     	getServer().getPluginManager().registerEvents(new WeaponEvent(), this);
+    	
+    	getServer().getPluginManager().registerEvents(new ArenaEditGUI(), this);
+    	getServer().getPluginManager().registerEvents(new ClientNPCPacketListener(), this);
     }
     
 	@Override
@@ -33,15 +36,16 @@ public class LimaMain extends JavaPlugin {
 		INSTANCE = this;
 		StructureAPI.plugin = this;
 		
-		
-		ArenaManager.setupConfigs(this);
+		//l'ordre est important
 		WeaponManager.loadWeapons(this);
+		ArenaManager.setupConfigs(this);
 		
 		CommandLima cl = new CommandLima();
 		cl.setup();
 		
 		getCommand("bonjour").setExecutor(new CommandBonjour());
 		getCommand("lima").setExecutor(cl);
+		getCommand("npccreate").setExecutor(new CommandNPC());
 		
 		initListeners();
 		

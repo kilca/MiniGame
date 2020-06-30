@@ -10,7 +10,7 @@ commands:
   lima:
     description: Lima command
     permission: lima.use
-  npc:
+  npccreate:
     description: NPC test command
-    permission: npc.test.use
+    permission: lima.npc.test.use
   

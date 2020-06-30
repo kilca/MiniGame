@@ -8,10 +8,16 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
+import net.minecraft.server.v1_15_R1.EntityFox.i;
 import poly.bedtech.LimaMain;
 import poly.bedtech.StructureAPI;
+import poly.bedtech.weapons.CustomWeapon;
+import poly.bedtech.weapons.WeaponManager;
 
 public class ArenaManager {
 
@@ -56,7 +62,23 @@ public class ArenaManager {
 				l2 = new Location(world,loc2x,loc2y,loc2z);
 			}
 			
-			addArena(new Arena(name,l1,l2,world));
+			Arena ar = new Arena(name,l1,l2,world);
+			
+			for(CustomWeapon cw : WeaponManager.weapons) {
+				int count = lima.getConfig().getConfigurationSection("arenas").getInt(s+".items."+cw.name);
+				ItemStack it = cw.getItem();
+				/*
+				if (count == 0) {
+					it.addEnchantment(Enchantment.LUCK, 2);
+				}
+				*/
+				if (count != 0) {
+					ar.items.add(cw.getItem());
+				}
+			}
+			
+			
+			addArena(ar);
 			
 			//System.out.println(loc1x);
 			

@@ -45,6 +45,7 @@ public class CommandArena extends SubCommand {
 				sender.sendMessage("edit [name]");
 				sender.sendMessage("edititem [name]");
 				sender.sendMessage("remove [name]");
+				sender.sendMessage("join [name]");
 			break;
 		
 			case "list":

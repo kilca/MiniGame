@@ -21,6 +21,8 @@ import poly.bedtech.LimaMain;
 public class WeaponManager {
 
 	
+	//le rocket jump marche
+	
 	public static List<CustomWeapon> weapons = new ArrayList<CustomWeapon>();
 	
 	
@@ -68,9 +70,7 @@ public class WeaponManager {
 		
 	}
 	
-	public static void loadWeapons(LimaMain plugin) {
-		File f = new File(plugin.getDataFolder(),"weapons.yml");
-		cfg = YamlConfiguration.loadConfiguration(f);
+	public static void loadGuns() {
 		
 		
 		if (cfg.getConfigurationSection("guns") == null) {
@@ -84,10 +84,12 @@ public class WeaponManager {
 		    double damage = 2.0;
 		    double radius = 2.0;
 		    boolean destruct = false;		
-		    int fragDispersion = 1;//nombre de tirs
+		    int bullet_number = 1;//nombre de tirs
 			double knockback = 0.0;
+			float zoom = 0.0f;
+			double spread = 0.0;
 			
-			//penser a verif si cle existe
+			//[!] penser a verif si cle existe
 			
 			id = cfg.getConfigurationSection("guns").getString(s+".id");
 			projectile = cfg.getConfigurationSection("guns").getString(s+".projectile");
@@ -96,8 +98,10 @@ public class WeaponManager {
 			damage = cfg.getConfigurationSection("guns").getInt(s+".damage");
 			radius = cfg.getConfigurationSection("guns").getInt(s+".radius");
 			destruct = cfg.getConfigurationSection("guns").getBoolean(s+".destruct");
-			fragDispersion = cfg.getConfigurationSection("guns").getInt(s+".fragDispersion");
+			bullet_number = cfg.getConfigurationSection("guns").getInt(s+".bullet_number");
 			knockback = cfg.getConfigurationSection("guns").getDouble(s+".knockback");
+			zoom =(float) cfg.getConfigurationSection("guns").getDouble(s+".zoom");
+			spread =  cfg.getConfigurationSection("guns").getDouble(s+".spread");
 			
 			CustomGun temp = new CustomGun(s,id,projectile);
 			
@@ -106,10 +110,85 @@ public class WeaponManager {
 			temp.radius = radius;
 			temp.destruct = destruct;
 			temp.knockback = knockback;
-			temp.fragDispersion = fragDispersion;
+			temp.bullet_number = bullet_number;
+			temp.zoom = zoom;
+			temp.spread = spread;
 			
 			weapons.add(temp);
 		}
+		
+	}
+	
+	public static void loadMelee() {
+		
+		
+		if (cfg.getConfigurationSection("melee") == null) {
+			return;
+		}
+		
+		for(String s : cfg.getConfigurationSection("melee").getKeys(false)) {
+			String id = "";
+		    double damage = 2.0;
+		    double knockback = 2.0;
+			
+			//[!] penser a verif si cle existe
+			
+			id = cfg.getConfigurationSection("melee").getString(s+".id");
+			damage = cfg.getConfigurationSection("melee").getInt(s+".damage");
+			knockback = cfg.getConfigurationSection("melee").getInt(s+".knockback");
+			
+			CustomMelee temp = new CustomMelee(s,id);
+			
+			temp.damage = damage;
+			temp.knockback = knockback;
+			
+			weapons.add(temp);
+		}
+		
+	}
+	
+	public static void loadGrenade() {
+		
+		
+		if (cfg.getConfigurationSection("grenade") == null) {
+			return;
+		}
+		
+		for(String s : cfg.getConfigurationSection("grenade").getKeys(false)) {
+			String id = "";
+		    double damage = 2.0;
+		    double radius;
+		    double delay;
+		    boolean fire;
+		    
+			//[!] penser a verif si cle existe
+			
+			id = cfg.getConfigurationSection("grenade").getString(s+".id");
+			damage = cfg.getConfigurationSection("grenade").getInt(s+".damage");
+			radius = cfg.getConfigurationSection("grenade").getInt(s+".radius");
+			delay = cfg.getConfigurationSection("grenade").getDouble(s+".delay");
+			fire = cfg.getConfigurationSection("grenade").getBoolean(s+".fire");
+			
+			CustomGrenade temp = new CustomGrenade(s,id);
+			
+			temp.damage = damage;
+			temp.radius = radius;
+			temp.explosionDelay = delay;
+			temp.fire = fire;
+			
+			weapons.add(temp);
+		}
+		
+	}
+	
+	
+	public static void loadWeapons(LimaMain plugin) {
+		File f = new File(plugin.getDataFolder(),"weapons.yml");
+		cfg = YamlConfiguration.loadConfiguration(f);
+		
+		loadGuns();
+		loadMelee();
+		loadGrenade();
 		
 	}
 	

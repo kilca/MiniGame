@@ -39,6 +39,7 @@ public class ArenaEditGUI implements Listener {
 	private final String infoName = "Arena info";
 	private final String saveName = "Save";
 	private final String loadName = "Load";
+	private final String itemListName = "Item List";
 	
 	private final String borderName = "Show/Hide Border";
 	
@@ -106,12 +107,18 @@ public class ArenaEditGUI implements Listener {
 		itemBorderM.setLore(Arrays.asList("wait 1 sec after remove border"));
 		itemBorder.setItemMeta(itemBorderM);
 		
+		ItemStack itemlists = new ItemStack(Material.STICK);
+		ItemMeta itemlistsM = itemlists.getItemMeta();
+		itemlistsM.setDisplayName(itemListName);
+		itemlists.setItemMeta(itemlistsM);
+		
 		inv.setItem(0, itemPos1);
 		inv.setItem(1, itemPos2);
 		inv.setItem(2, itemInfo);
 		inv.setItem(3, itemSave);
 		inv.setItem(4, itemLoad);
 		inv.setItem(5, itemBorder);
+		inv.setItem(6, itemlists);
 		
 		player.openInventory(inv);
 		
@@ -205,8 +212,12 @@ public class ArenaEditGUI implements Listener {
 				ArenaManager.loadArena(player, ar);
 				break;
 			case borderName:
+				System.out.println("border");
 				ar.changeBorder();
 				break;
+			case itemListName:
+				ShowItemList(ar,player);
+				return;
 			default:
 				return;
 		
@@ -218,6 +229,20 @@ public class ArenaEditGUI implements Listener {
 		showUI(player,ar);
 		
 		event.setCancelled(true);
+		
+	}
+	
+	public void ShowItemList(Arena ar, Player player) {
+		
+		
+		Inventory inv = Bukkit.createInventory(null, 18,ar.getName()+" Item List");
+		for(int i=0;i<ar.items.size();i++) {
+			//ItemStack item = ar.items.get(i);
+			inv.setItem(i, ar.items.get(i));
+		}
+			
+		System.out.println("ici");
+		player.openInventory(inv);
 		
 	}
 	

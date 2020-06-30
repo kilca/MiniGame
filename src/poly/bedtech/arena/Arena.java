@@ -1,9 +1,15 @@
 package poly.bedtech.arena;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import poly.bedtech.LimaMain;
@@ -27,6 +33,12 @@ public class Arena {
 	//dans autre classe ?
 
 	public BukkitRunnable borderRun;
+	
+	public List<Team> teams;
+	
+	//default inventory .. don't modify except config
+	public List<ItemStack> items = new ArrayList<ItemStack>();
+	
 	
 	public Arena(String name, World world) {
 		
@@ -121,7 +133,16 @@ public class Arena {
 			limInstance.getConfig().set(def+"loc2.y", loc2.getY());
 			limInstance.getConfig().set(def+"loc2.z", loc2.getZ());
 		}
-		
+		for(ItemStack it : items) {
+			/*
+			if (it.containsEnchantment(Enchantment.LUCK)) {
+				limInstance.getConfig().set(def+"items."+it.getItemMeta().getDisplayName(), 0);
+			}else {
+				limInstance.getConfig().set(def+"items."+it.getItemMeta().getDisplayName(), it.getAmount());
+			}
+			*/
+			limInstance.getConfig().set(def+"items."+it.getItemMeta().getDisplayName(), it.getAmount());
+		}
 		limInstance.saveConfig();
 		
 	}

@@ -7,29 +7,52 @@ guns:
     damage: 5
     destruct: true
     radius: 5
+    explode_dmg: 1
+    bullet_number: 1
+    spread: 0
   Shotgun:
-    id: Material.IRON_HOE
+    id: IRON_HOE
     projectile: SNOWBALL
     sound: TRUC
     velocity: 3.0
     damage: 2
     destruct: true
     radius: 1
+    bullet_number: 5
+    spread: 0.15
   Sniper:
     id: IRON_HORSE_ARMOR
     projectile: SNOWBALL
     sound: TRUC
-    velocity: 10.0
+    velocity: 7.5
     damage: 10
     destruct: false
     radius: 0
+    bullet_number: 1
+    zoom: -0.15
+    spread: 0
 melee:
-  Poke:
+  BaseballBat:
+    id: STICK
+    damage: 1
+    knockback: 1
   FirePunch:
+    id: STICK
+    damage: 20
+    knockback: 3
 grenade:
   Dynamite:
+    id: COOKIE
+    damage: 1
+    radius: 2
+    fire: false
+    delay: 5.0
   Molotov:
-  Coconut:
+    id: BRICK
+    damage: 2
+    radius: 2
+    delay: 5.0
+    fire: false
 landmine:
   Mine:
   Trap:
