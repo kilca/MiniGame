@@ -8,8 +8,6 @@ import poly.bedtech.commands.CommandBonjour;
 import poly.bedtech.commands.CommandLima;
 import poly.bedtech.weapons.WeaponEvent;
 import poly.bedtech.weapons.WeaponManager;
-import poly.bedtech.commands.CommandNPC;
-import poly.bedtech.npc.ClientNPCPacketListener;
 
 public class LimaMain extends JavaPlugin {
 
@@ -22,8 +20,6 @@ public class LimaMain extends JavaPlugin {
     	getServer().getPluginManager().registerEvents(new ArenaEditGUI(), this);
     	getServer().getPluginManager().registerEvents(new WeaponEvent(), this);
     	
-    	getServer().getPluginManager().registerEvents(new ArenaEditGUI(), this);
-    	getServer().getPluginManager().registerEvents(new ClientNPCPacketListener(), this);
     }
     
 	@Override
@@ -45,7 +41,6 @@ public class LimaMain extends JavaPlugin {
 		
 		getCommand("bonjour").setExecutor(new CommandBonjour());
 		getCommand("lima").setExecutor(cl);
-		getCommand("npccreate").setExecutor(new CommandNPC());
 		
 		initListeners();
 		
