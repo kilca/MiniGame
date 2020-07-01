@@ -13,6 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import poly.bedtech.arena.Arena;
 import poly.bedtech.arena.ArenaEditGUI;
 import poly.bedtech.arena.ArenaManager;
+import poly.bedtech.arena.ArenaTeam;
 
 public class CommandArena extends SubCommand {
 
@@ -45,7 +46,9 @@ public class CommandArena extends SubCommand {
 				sender.sendMessage("edit [name]");
 				sender.sendMessage("edititem [name]");
 				sender.sendMessage("remove [name]");
+				
 				sender.sendMessage("join [name]");
+				sender.sendMessage("leave [name]");
 			break;
 		
 			case "list":
@@ -108,7 +111,35 @@ public class CommandArena extends SubCommand {
 
 				break;
 					
-			
+			case "join":
+				
+				if (arg1 != null) {
+					Arena ar = ArenaManager.getArenaByName(arg1);
+					if (ar == null) {
+						sender.sendMessage("arena not found");
+						return;	
+					}
+					
+					
+					ar.joinArena(player);
+					player.sendMessage(ar.getPlayerCount());
+				}
+
+				break;
+			case "leave":
+				
+				if (arg1 != null) {
+					Arena ar = ArenaManager.getArenaByName(arg1);
+					if (ar == null) {
+						sender.sendMessage("arena not found");
+						return;	
+					}
+					
+					ar.leaveArena(player);
+					player.sendMessage(ar.getPlayerCount());
+				}
+
+				break;
 			
 			
 		}

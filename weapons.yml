@@ -52,10 +52,18 @@ grenade:
     damage: 2
     radius: 2
     delay: 5.0
-    fire: false
+    fire: true
 landmine:
   Mine:
+    id: STONE_PRESSURE_PLATE
+    size: 2
+    damage: 2
+    radius: 2
   Trap:
+    id: STONE_PRESSURE_PLATE
+    size: 2
+    damage: 2
+    radius: 2
 utilities:
   Elytra:
   Block:

@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -34,16 +35,20 @@ public class Arena {
 
 	public BukkitRunnable borderRun;
 	
-	public List<Team> teams;
+	public List<ArenaTeam> teams;
 	
 	//default inventory .. don't modify except config
 	public List<ItemStack> items = new ArrayList<ItemStack>();
 	
+	//final
+	public int totalMaxPlayer =2;
+	public int teamCount = 2; 
 	
 	public Arena(String name, World world) {
 		
 		this.name = name;
 		this.world = world;
+		ajouterTeam();
 	}
 	
 	public Arena(String name, Location l1, Location l2, World world) {
@@ -52,6 +57,14 @@ public class Arena {
 		this.loc2 = l2;
 		
 		this.world = world;
+		ajouterTeam();
+	}
+	
+	private void ajouterTeam() {
+		teams = new ArrayList<ArenaTeam>();
+		for(int i=0;i<teamCount;i++) {
+			teams.add(new ArenaTeam(items,totalMaxPlayer/teamCount));
+		}
 	}
 	
 	public void changeBorder() {
@@ -147,6 +160,98 @@ public class Arena {
 		
 	}
 	
+	private List<Player> getAllPlayers(){
+		
+		List<Player> retour = new ArrayList<Player>();
+		for(ArenaTeam t : teams) {
+			retour.addAll(t.players);
+		}
+		return retour;
+		
+	}
+	
+	public void tryBeginGame() {
+		
+		for(ArenaTeam t : this.teams) {
+			if (!t.isFull()) {
+				return;
+			}
+		}
+		
+		Arena self = this;
+		borderRun = new BukkitRunnable() {
+			int count = 10;
+			
+			@Override
+			public void run() {
+				
+				for(ArenaTeam t : self.teams) {
+					if (!t.isFull()) {
+						this.cancel();
+					}
+				}
+				
+				for(Player p : self.getAllPlayers()) {
+					p.sendMessage("game begin in :"+count);
+				}
+				count--;
+				if (count == 0) {
+					self.startGame();
+					this.cancel();
+				}
+			}
+			
+			
+			
+		};
+		borderRun.runTaskTimer(LimaMain.INSTANCE, 0, 20);
+		
+	}
+	
+	private void startGame() {
+		System.out.println("game started");
+		
+	}
+	
+	public void joinArena(Player player) {
+		
+		for(ArenaTeam t : this.teams) {
+			if (t.players.contains(player)) {
+				player.sendMessage("You are already in a team");
+				return;
+			}
+		}
+		
+		for(ArenaTeam t : this.teams) {
+			if (!t.isFull()) {
+				t.joinTeam(player);
+				player.sendMessage("arena joined");
+				tryBeginGame();
+				return;
+			}
+		}
+		player.sendMessage("arena is full");
+		
+	}
+	
+	public void leaveArena(Player player) {
+		for(ArenaTeam t : this.teams) {
+			if (!t.isFull()) {
+				t.leaveTeam(player);
+				return;
+			}
+		}
+		
+	}
+	public String getPlayerCount() {
+		
+		int playerCount = 0;
+		for(ArenaTeam at : teams) {
+			playerCount+=at.currentPlayer;
+		}
+		return playerCount+"/"+totalMaxPlayer;
+		
+	}
 
 	
 	

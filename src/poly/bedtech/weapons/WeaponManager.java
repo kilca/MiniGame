@@ -181,6 +181,36 @@ public class WeaponManager {
 		
 	}
 	
+	public static void loadLandmine() {
+		
+		
+		if (cfg.getConfigurationSection("landmine") == null) {
+			return;
+		}
+		
+		for(String s : cfg.getConfigurationSection("landmine").getKeys(false)) {
+			String id = "";
+		    double damage = 2.0;
+		    int radius;
+		    int size;
+		    
+			//[!] penser a verif si cle existe
+			
+			id = cfg.getConfigurationSection("landmine").getString(s+".id");
+			damage = cfg.getConfigurationSection("landmine").getDouble(s+".damage");
+			radius = cfg.getConfigurationSection("landmine").getInt(s+".radius");
+			size = cfg.getConfigurationSection("landmine").getInt(s+".size");
+			
+			CustomLandmine temp = new CustomLandmine(s,id);
+			
+			temp.damage = damage;
+			temp.radius = radius;
+			temp.size = size;
+			
+			weapons.add(temp);
+		}
+		
+	}
 	
 	public static void loadWeapons(LimaMain plugin) {
 		File f = new File(plugin.getDataFolder(),"weapons.yml");
@@ -189,6 +219,7 @@ public class WeaponManager {
 		loadGuns();
 		loadMelee();
 		loadGrenade();
+		loadLandmine();
 		
 	}
 	

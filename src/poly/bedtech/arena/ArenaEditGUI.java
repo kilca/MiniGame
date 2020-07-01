@@ -254,7 +254,7 @@ public class ArenaEditGUI implements Listener {
 		
 		if (it == null)
 			return;
-		if (it.getType() == Material.COMPASS && it.getItemMeta().getDisplayName().equals(itemName)) {
+		if (it.getType() == Material.CLOCK && it.getItemMeta().getDisplayName().equals(itemName)) {
 			if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK ) {
 				
 				Arena ar = ArenaManager.getArenaByName(it.getItemMeta().getLore().get(1));
@@ -275,7 +275,7 @@ public class ArenaEditGUI implements Listener {
 	
 	public static void giveEditItem(Player p, Arena a) {
 		
-		ItemStack customBoussole = new ItemStack(Material.COMPASS);
+		ItemStack customBoussole = new ItemStack(Material.CLOCK);
 		ItemMeta cbMeta = customBoussole.getItemMeta();
 		cbMeta.setDisplayName(itemName);
 		cbMeta.setLore(Arrays.asList("Custom edit tool for arena",a.getName()));

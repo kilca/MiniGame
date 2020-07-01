@@ -1,11 +1,16 @@
 package poly.bedtech.weapons;
 
+import java.util.List;
+
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -37,6 +42,12 @@ public class WeaponEvent implements Listener{
 			cw.rightClick(event, player);
 	}
 	
+	public ItemStack getItemFromPlayer(Player player) {
+		
+		return player.getInventory().getItem(player.getInventory().getHeldItemSlot());
+		
+	}
+	
 	@EventHandler
 	public void onHit(EntityDamageByEntityEvent event) {
 		
@@ -61,7 +72,8 @@ public class WeaponEvent implements Listener{
 			return;
 		
 		
-		ItemStack item = player.getInventory().getItem(player.getInventory().getHeldItemSlot());
+		ItemStack item = getItemFromPlayer(player);
+		
 		if (item == null)
 			return;
 		String name = item.getItemMeta().getDisplayName();
@@ -74,6 +86,51 @@ public class WeaponEvent implements Listener{
 		event.setDamage(weapon.damage);
 		//event.setCancelled(true);
 	}
+	
+	@EventHandler
+	public void onActivate(PlayerInteractEvent event) {
+		//TODO try{}
+	    if(event.getAction().equals(Action.PHYSICAL)) {
+	    	System.out.println("clicked block :"+event.getClickedBlock());
+			if (event.getClickedBlock().hasMetadata("mine")) {
+				FixedMetadataValue val  = (FixedMetadataValue) event.getClickedBlock().getMetadata("mine").get(0);
+				CustomLandmine mine = (CustomLandmine) WeaponManager.getWeaponByName(""+val.value());
+				if (mine == null)
+					return;
+				mine.explode(event.getClickedBlock().getLocation(), mine.radius);
+				
+			}
+			System.out.println("test has metadata mineother");
+			if (event.getClickedBlock().hasMetadata("mineother")) {
+				System.out.println("ici");
+				FixedMetadataValue val  = (FixedMetadataValue) event.getClickedBlock().getMetadata("mineother").get(0);
+				List<Block> blockmine = (List<Block>) val.value();
+				System.out.println(blockmine.size());
+				for(Block b : blockmine) {
+					b.setType(Material.AIR);
+				}
+				event.setCancelled(true);
+				event.getClickedBlock().setType(Material.AIR);
+			}
+	    }
+	}
+	
+	/*
+	@EventHandler
+	public void onPlace(BlockPlaceEvent event) {
+		Player player = event.getPlayer();
+		if (player == null)
+			return;
+		ItemStack item = getItemFromPlayer(player);
+		
+		if (item == null)
+			return;
+		
+		
+	//TODO: Add logic
+	}
+	*/
+	
 	/*
 	@EventHandler
     public void onHit(ProjectileHitEvent event) {

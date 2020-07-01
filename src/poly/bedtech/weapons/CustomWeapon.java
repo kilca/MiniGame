@@ -1,5 +1,6 @@
 package poly.bedtech.weapons;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Egg;
@@ -75,7 +76,10 @@ public abstract class CustomWeapon{
 		return Snowball.class;
 		
 	}
-	
+	public void explode(Location l, float radius) {
+		l.getWorld().createExplosion(l, radius);
+		
+	}
 	public void explode(Entity entity, float radius) {
 		
 		entity.getWorld().createExplosion(entity.getLocation(), radius);
