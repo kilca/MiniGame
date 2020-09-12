@@ -46,6 +46,7 @@ public class ArenaManager {
 			
 			boolean haveLoc1 = lima.getConfig().getConfigurationSection("arenas").isSet(s+".loc1.x");
 			boolean haveLoc2 = lima.getConfig().getConfigurationSection("arenas").isSet(s+".loc2.x");
+			boolean haveSpecLoc = lima.getConfig().getConfigurationSection("arenas").isSet(s+".specLoc.x");
 			
 			if (haveLoc1) {
 				double loc1x = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".loc1.x");
@@ -64,12 +65,46 @@ public class ArenaManager {
 			
 			Arena ar = new Arena(name,l1,l2,world);
 			
+			Location specLoc = null;
+			int minPlayer = lima.getConfig().getConfigurationSection("arenas").getInt(s+".minPlayer");
+			int maxPlayer = lima.getConfig().getConfigurationSection("arenas").getInt(s+".maxPlayer");
+			String weaponName = lima.getConfig().getConfigurationSection("arenas").getString(s+".weapon");
+			CustomWeapon weapon = WeaponManager.getWeaponByName(weaponName);
+			
+			
+			if (haveSpecLoc) {
+				double loc2x = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".specLoc.x");
+				double loc2y = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".specLoc.y");
+				double loc2z = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".specLoc.z");
+				
+				specLoc = new Location(world,loc2x,loc2y,loc2z);
+			}
+			
+			//marche pas
+			List<Location> spawnLocs = new ArrayList<Location>();
+			if (lima.getConfig().isConfigurationSection("arenas"+s+".spawnlocs")) {
+				for(String s2 : lima.getConfig().getConfigurationSection("arenas"+s+".spawnlocs").getKeys(false)) {
+					
+					System.out.println("trouvé");
+					double x = lima.getConfig().getConfigurationSection("arenas").getDouble(s+s2+".x");
+					double y = lima.getConfig().getConfigurationSection("arenas").getDouble(s+s2+".y");
+					double z = lima.getConfig().getConfigurationSection("arenas").getDouble(s+s2+".z");
+					String w = lima.getConfig().getConfigurationSection("arenas").getString(s+s2+".world");
+					
+					spawnLocs.add(new Location(LimaMain.INSTANCE.getServer().getWorld(w),x,y,z));	
+				}
+			}
+			
 
 			
 			
-			addArena(ar);
+			ar.spawnLocs = spawnLocs;
+			ar.specLoc = specLoc;
+			ar.minPlayer = minPlayer;
+			ar.maxPlayer = maxPlayer;
+			ar.weapon = weapon;
 			
-			//System.out.println(loc1x);
+			addArena(ar);
 			
 		}
 		

@@ -28,8 +28,8 @@ public class Arena {
 	
 	//mettre Equipes
 	
-	public boolean isOpen;
-	public boolean isStarted;
+	public boolean isOpen = false;
+	public boolean isStarted = false;
 	
 	public World world;
 	
@@ -42,12 +42,12 @@ public class Arena {
 	
 	public List<Player> players = new ArrayList<Player>();
 	
-	public int maxPlayer;
+	public int minPlayer = 2;
+	public int maxPlayer = 99;
 	
 	public List<Location> spawnLocs;
 	public Location specLoc;
 	
-	public int minPlayer;
 	
 	public Arena(String name, World world) {
 		
@@ -162,6 +162,27 @@ public class Arena {
 			limInstance.getConfig().set(def+"loc2.z", loc2.getZ());
 		}
 
+		if (specLoc != null) {
+			limInstance.getConfig().set(def+"specLoc.x", specLoc.getX());
+			limInstance.getConfig().set(def+"specLoc.y", specLoc.getY());
+			limInstance.getConfig().set(def+"specLoc.z", specLoc.getZ());
+		}
+		
+		limInstance.getConfig().set(def+"weapon", weapon.localizedName);
+		
+		limInstance.getConfig().set(def+"minPlayer", minPlayer);
+		limInstance.getConfig().set(def+"maxPlayer", maxPlayer);
+		
+		limInstance.getConfig().set(def+"spawnlocs", null); 
+		
+		for(int i=0;i<spawnLocs.size();i++) {
+			Location l = spawnLocs.get(i);
+			limInstance.getConfig().set(def+"spawnlocs."+i+".x", l.getX());
+			limInstance.getConfig().set(def+"spawnlocs."+i+".y", l.getY());
+			limInstance.getConfig().set(def+"spawnlocs."+i+".z", l.getZ());
+			limInstance.getConfig().set(def+"spawnlocs."+i+".world", l.getWorld().getName());
+		}
+		
 		limInstance.saveConfig();
 		
 	}
