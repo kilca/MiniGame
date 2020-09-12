@@ -1,7 +1,12 @@
 package poly.bedtech.weapons;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.Entity;
@@ -19,7 +24,12 @@ public abstract class CustomWeapon{
 	//chiant a faire: autotarget / airstrike 
 	//todo explosion dmg
 	
-	public String name;
+	private static int staticCount = 0;
+	private int weaponIndex;
+	
+	public String localizedName;//name for localize
+	public String name;//shown name
+	
 	public WeaponType type;
 	public String id;
 	
@@ -30,9 +40,23 @@ public abstract class CustomWeapon{
 	
 	public double damage;
 	
-	public CustomWeapon(String name, String id) {
+	public List<String> lore;
+	
+	//get index in WeaponManager Array
+	public int getWeaponIndex() {
+		return weaponIndex;
+	}
+	
+	public CustomWeapon(String localizedName, String name, String id) {
+		weaponIndex = staticCount;
+		staticCount++;
+		
+		this.localizedName = localizedName;
 		this.name = name;
 		this.id = id;
+		
+		lore = new ArrayList<String>();
+		
 		if (id == null) {
 			System.err.println("wrong material or inexistent");
 		}
@@ -43,14 +67,29 @@ public abstract class CustomWeapon{
 		}
 	}
 	
+	
 	public abstract void leftClick(PlayerInteractEvent event, Player p);
 	
 	public abstract void rightClick(PlayerInteractEvent event, Player p);
 	
+    private String translateColor(String s){
+    	return ChatColor.translateAlternateColorCodes('&',s);
+    }
+    
+	public void addLore(String s) {
+		lore.add(translateColor(s));
+	}
+	
 	public ItemStack getItem() {
+		
+		
 		ItemStack item =  new ItemStack(material);
 		ItemMeta itemM = item.getItemMeta();
-		itemM.setDisplayName(name);
+		itemM.setDisplayName(translateColor(name));
+		itemM.setLocalizedName(localizedName);
+		if (!lore.isEmpty())
+			itemM.setLore(lore);
+		
 		item.setItemMeta(itemM);
 		
 		//todo put use in lore

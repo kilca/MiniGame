@@ -14,6 +14,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import poly.bedtech.LimaMain;
+import poly.bedtech.weapons.CustomWeapon;
+import poly.bedtech.weapons.WeaponManager;
 
 public class Arena {
 
@@ -35,20 +37,31 @@ public class Arena {
 
 	public BukkitRunnable borderRun;
 	
-	public List<ArenaTeam> teams;
-	
 	//default inventory .. don't modify except config
-	public List<ItemStack> items = new ArrayList<ItemStack>();
+	public CustomWeapon weapon;
 	
-	//final
-	public int totalMaxPlayer =2;
-	public int teamCount = 2; 
+	public List<Player> players = new ArrayList<Player>();
+	
+	public int maxPlayer;
+	
+	public List<Location> spawnLocs;
+	public Location specLoc;
+	
+	public int minPlayer;
 	
 	public Arena(String name, World world) {
 		
 		this.name = name;
 		this.world = world;
-		ajouterTeam();
+		
+		spawnLocs = new ArrayList<Location>();
+		
+		if (WeaponManager.weapons.size() == 0) {
+			System.err.println("no weapon found");
+			return;
+		}
+		weapon = WeaponManager.weapons.get(0);
+		
 	}
 	
 	public Arena(String name, Location l1, Location l2, World world) {
@@ -57,14 +70,15 @@ public class Arena {
 		this.loc2 = l2;
 		
 		this.world = world;
-		ajouterTeam();
-	}
-	
-	private void ajouterTeam() {
-		teams = new ArrayList<ArenaTeam>();
-		for(int i=0;i<teamCount;i++) {
-			teams.add(new ArenaTeam(items,totalMaxPlayer/teamCount));
+		
+		spawnLocs = new ArrayList<Location>();
+		
+		if (WeaponManager.weapons.size() == 0) {
+			System.err.println("no weapon found");
+			return;
 		}
+		weapon = WeaponManager.weapons.get(0);
+		
 	}
 	
 	public void changeBorder() {
@@ -81,6 +95,9 @@ public class Arena {
 		borderRun = null;
 	}
 	
+	
+	
+	//Todo fix error
 	private void showBorder() {
 		borderRun = new BukkitRunnable() {
 			@Override
@@ -92,8 +109,6 @@ public class Arena {
 				int endX = Math.max(loc1.getBlockX(), loc2.getBlockX());
 				int endY = Math.max(loc1.getBlockX(), loc2.getBlockY());
 				int endZ = Math.max(loc1.getBlockX(), loc2.getBlockZ());
-				
-				System.out.println("we show particle");
 				
 				for (double x = startX + 0.5; x <= endX + 1; x++) {
 		            for (double y = startY; y <= endY + 1; y++) {
@@ -146,37 +161,18 @@ public class Arena {
 			limInstance.getConfig().set(def+"loc2.y", loc2.getY());
 			limInstance.getConfig().set(def+"loc2.z", loc2.getZ());
 		}
-		for(ItemStack it : items) {
-			/*
-			if (it.containsEnchantment(Enchantment.LUCK)) {
-				limInstance.getConfig().set(def+"items."+it.getItemMeta().getDisplayName(), 0);
-			}else {
-				limInstance.getConfig().set(def+"items."+it.getItemMeta().getDisplayName(), it.getAmount());
-			}
-			*/
-			limInstance.getConfig().set(def+"items."+it.getItemMeta().getDisplayName(), it.getAmount());
-		}
+
 		limInstance.saveConfig();
 		
 	}
 	
 	private List<Player> getAllPlayers(){
-		
-		List<Player> retour = new ArrayList<Player>();
-		for(ArenaTeam t : teams) {
-			retour.addAll(t.players);
-		}
-		return retour;
+		return players;
 		
 	}
 	
 	public void tryBeginGame() {
 		
-		for(ArenaTeam t : this.teams) {
-			if (!t.isFull()) {
-				return;
-			}
-		}
 		
 		Arena self = this;
 		borderRun = new BukkitRunnable() {
@@ -184,12 +180,7 @@ public class Arena {
 			
 			@Override
 			public void run() {
-				
-				for(ArenaTeam t : self.teams) {
-					if (!t.isFull()) {
-						this.cancel();
-					}
-				}
+		
 				
 				for(Player p : self.getAllPlayers()) {
 					p.sendMessage("game begin in :"+count);
@@ -215,41 +206,34 @@ public class Arena {
 	
 	public void joinArena(Player player) {
 		
-		for(ArenaTeam t : this.teams) {
-			if (t.players.contains(player)) {
-				player.sendMessage("You are already in a team");
-				return;
-			}
+		if (!isOpen) {
+			player.sendMessage("The arena is not open");
+		}
+		if (isStarted) {
+			player.sendMessage("The game already started");
 		}
 		
-		for(ArenaTeam t : this.teams) {
-			if (!t.isFull()) {
-				t.joinTeam(player);
-				player.sendMessage("arena joined");
-				tryBeginGame();
-				return;
-			}
+		if (players.contains(player)) {
+			player.sendMessage("You are already in a team");
+			return;
 		}
-		player.sendMessage("arena is full");
+		
+		player.sendMessage("arena joined");
+		tryBeginGame();
 		
 	}
 	
 	public void leaveArena(Player player) {
-		for(ArenaTeam t : this.teams) {
-			if (!t.isFull()) {
-				t.leaveTeam(player);
-				return;
-			}
+		
+		if (players.contains(player)) {
+			players.remove(player);
 		}
+		
 		
 	}
 	public String getPlayerCount() {
 		
-		int playerCount = 0;
-		for(ArenaTeam at : teams) {
-			playerCount+=at.currentPlayer;
-		}
-		return playerCount+"/"+totalMaxPlayer;
+		return players.size()+"/"+maxPlayer;
 		
 	}
 

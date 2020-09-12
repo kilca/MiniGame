@@ -1,3 +1,7 @@
+#Use space and not indent, be carefull with space with list
+
+# ------------------------------ GUNS ------------------------
+
 guns:
   Bazooka:
     id: STICK
@@ -31,39 +35,29 @@ guns:
     bullet_number: 1
     zoom: -0.15
     spread: 0
+    
+# ------------------------------ MELEE ------------------------
+
 melee:
   BaseballBat:
+    name: '&c BaaseballBat'
+    lore:
+      - '&b une super batte !'
+      - '&b trop cool'
     id: STICK
     damage: 1
-    knockback: 1
+    flags:
+      - HIDE_ENCHANTS
+    enchantments:
+      - 'KNOCKBACK:3'
+      - 'DURABILITY:3'  
   FirePunch:
+    name: '&c FiirePunch'
     id: STICK
     damage: 20
-    knockback: 3
-grenade:
-  Dynamite:
-    id: COOKIE
-    damage: 1
-    radius: 2
-    fire: false
-    delay: 5.0
-  Molotov:
-    id: BRICK
-    damage: 2
-    radius: 2
-    delay: 5.0
-    fire: true
-landmine:
-  Mine:
-    id: STONE_PRESSURE_PLATE
-    size: 2
-    damage: 2
-    radius: 2
-  Trap:
-    id: STONE_PRESSURE_PLATE
-    size: 2
-    damage: 2
-    radius: 2
+
+# ------------------------------ OTHER (TO IMPLEMENT) ------------------------
+
 utilities:
   Elytra:
   Block:

@@ -64,18 +64,7 @@ public class ArenaManager {
 			
 			Arena ar = new Arena(name,l1,l2,world);
 			
-			for(CustomWeapon cw : WeaponManager.weapons) {
-				int count = lima.getConfig().getConfigurationSection("arenas").getInt(s+".items."+cw.name);
-				ItemStack it = cw.getItem();
-				/*
-				if (count == 0) {
-					it.addEnchantment(Enchantment.LUCK, 2);
-				}
-				*/
-				if (count != 0) {
-					ar.items.add(cw.getItem());
-				}
-			}
+
 			
 			
 			addArena(ar);

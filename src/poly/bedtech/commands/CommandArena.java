@@ -13,7 +13,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import poly.bedtech.arena.Arena;
 import poly.bedtech.arena.ArenaEditGUI;
 import poly.bedtech.arena.ArenaManager;
-import poly.bedtech.arena.ArenaTeam;
 
 public class CommandArena extends SubCommand {
 

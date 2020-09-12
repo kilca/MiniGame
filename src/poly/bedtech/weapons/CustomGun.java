@@ -34,8 +34,8 @@ public class CustomGun extends CustomWeapon{
 	
 	//todo zoom
 	
-	public CustomGun(String name, String id, String projectile) {
-		super(name, id);
+	public CustomGun(String localName, String name, String id, String projectile) {
+		super(localName, name, id);
 		this.projectile = projectile;
 		projectileClass = this.getEntityByName(projectile);
 		// TODO Auto-generated constructor stub

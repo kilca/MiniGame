@@ -28,6 +28,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import poly.bedtech.LimaMain;
+import poly.bedtech.weapons.CustomWeapon;
+import poly.bedtech.weapons.WeaponManager;
 
 public class ArenaEditGUI implements Listener {
 
@@ -39,9 +41,13 @@ public class ArenaEditGUI implements Listener {
 	private final String infoName = "Arena info";
 	private final String saveName = "Save";
 	private final String loadName = "Load";
-	private final String itemListName = "Item List";
-	
 	private final String borderName = "Show/Hide Border";
+	private final String spawnAdd = "Add Spawn";
+	private final String spawnClear = "Clear Spawn";
+	private final String spawnShow = "Show Spawn";
+	
+	private final String specLoc = "Set Spec Loc";
+	
 	
 	//peut etre pas une bonne idée la boussole car marche pas avec WorldEdit
 
@@ -107,10 +113,25 @@ public class ArenaEditGUI implements Listener {
 		itemBorderM.setLore(Arrays.asList("wait 1 sec after remove border"));
 		itemBorder.setItemMeta(itemBorderM);
 		
-		ItemStack itemlists = new ItemStack(Material.STICK);
-		ItemMeta itemlistsM = itemlists.getItemMeta();
-		itemlistsM.setDisplayName(itemListName);
-		itemlists.setItemMeta(itemlistsM);
+		ItemStack itemSpawnAdd = new ItemStack(Material.CLAY);
+		ItemMeta itemSpawnAddM = itemSpawnAdd.getItemMeta();
+		itemSpawnAddM.setDisplayName(spawnAdd);
+		itemSpawnAdd.setItemMeta(itemSpawnAddM);
+		
+		ItemStack itemSpawnClear = new ItemStack(Material.SPIDER_EYE);
+		ItemMeta itemSpawnClearM = itemSpawnClear.getItemMeta();
+		itemSpawnClearM.setDisplayName(spawnClear);
+		itemSpawnClear.setItemMeta(itemSpawnClearM);
+		
+		ItemStack itemSpawnShow = new ItemStack(Material.BOWL);
+		ItemMeta itemSpawnShowM = itemSpawnShow.getItemMeta();
+		itemSpawnShowM.setDisplayName(spawnShow);
+		itemSpawnShow.setItemMeta(itemSpawnShowM);
+		
+		ItemStack itemSpecSet = new ItemStack(Material.BONE);
+		ItemMeta itemSpecSetM = itemSpecSet.getItemMeta();
+		itemSpecSetM.setDisplayName(specLoc);
+		itemSpecSet.setItemMeta(itemSpecSetM);
 		
 		inv.setItem(0, itemPos1);
 		inv.setItem(1, itemPos2);
@@ -118,7 +139,11 @@ public class ArenaEditGUI implements Listener {
 		inv.setItem(3, itemSave);
 		inv.setItem(4, itemLoad);
 		inv.setItem(5, itemBorder);
-		inv.setItem(6, itemlists);
+		inv.setItem(6, itemSpawnAdd);
+		inv.setItem(7, itemSpawnClear);
+		inv.setItem(8, itemSpawnShow);
+		inv.setItem(9, itemSpecSet);
+		inv.setItem(10, a.weapon.getItem());
 		
 		player.openInventory(inv);
 		
@@ -194,36 +219,71 @@ public class ArenaEditGUI implements Listener {
 		if (ar == null)
 			return;
 		
-		switch (current.getItemMeta().getDisplayName()) {
-			case pos1Name:
-				ar.loc1 = player.getLocation();
-				player.sendMessage("set pos 1");
-				break;
-			case pos2Name:
-				ar.loc2 = player.getLocation();
-				player.sendMessage("set pos 2");
-				break;
-			case infoName:
-				break;
-			case saveName:
-				ArenaManager.saveArena(player, ar);
-				break;
-			case loadName:
-				ArenaManager.loadArena(player, ar);
-				break;
-			case borderName:
-				System.out.println("border");
-				ar.changeBorder();
-				break;
-			case itemListName:
-				ShowItemList(ar,player);
-				return;
-			default:
-				return;
+		//if is a weapon
+		if (!current.getItemMeta().getLocalizedName().isEmpty()) {
+			
+			System.out.println("dans le if getLocalizedName");
+			
+			CustomWeapon weapon = WeaponManager.getWeaponByName(current.getItemMeta().getLocalizedName());
+			int index = weapon.getWeaponIndex();
+			
+			if (WeaponManager.weapons.size()-1 == index)
+				index = 0;
+			else
+				index++;
+			
+			ar.weapon = WeaponManager.weapons.get(index);
+			
+			
+		}else {//other than a weapon
 		
+			//Todo Remplacer avec Localized Name
+			switch (current.getItemMeta().getDisplayName()) {
+				case pos1Name:
+					ar.loc1 = player.getLocation();
+					player.sendMessage("set pos 1");
+					break;
+				case pos2Name:
+					ar.loc2 = player.getLocation();
+					player.sendMessage("set pos 2");
+					break;
+				case infoName:
+					break;
+				case saveName:
+					ArenaManager.saveArena(player, ar);
+					break;
+				case loadName:
+					ArenaManager.loadArena(player, ar);
+					break;
+				case borderName:
+					System.out.println("border");
+					ar.changeBorder();
+					break;
+				case spawnAdd:
+					ar.spawnLocs.add(player.getLocation());
+					player.sendMessage("Added Spawn Location");
+					break;
+				case spawnClear:
+					ar.spawnLocs.clear();
+					player.sendMessage("Spawn Location Cleared");
+					break;
+				case spawnShow:
+					for(Location l : ar.spawnLocs) {
+						l.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, l.getX(), l.getY()+2,l.getZ(), 5);
+					}
+					player.sendMessage("Spawn Location Shown");
+					break;
+				case specLoc:
+					ar.specLoc = player.getLocation();
+					player.sendMessage("Spec Location Set");
+					break;
+				default:
+					return;
+			
+			
+			}
 		
 		}
-		
 		ar.saveConfig(LimaMain.INSTANCE);
 		
 		showUI(player,ar);
@@ -232,6 +292,8 @@ public class ArenaEditGUI implements Listener {
 		
 	}
 	
+	
+	/*
 	public void ShowItemList(Arena ar, Player player) {
 		
 		
@@ -245,6 +307,7 @@ public class ArenaEditGUI implements Listener {
 		player.openInventory(inv);
 		
 	}
+	*/
 	
 	@EventHandler
 	public void onInteract(PlayerInteractEvent event) {

@@ -90,16 +90,10 @@ public class WeaponEvent implements Listener{
 	@EventHandler
 	public void onActivate(PlayerInteractEvent event) {
 		//TODO try{}
-	    if(event.getAction().equals(Action.PHYSICAL)) {
+	    /*
+		if(event.getAction().equals(Action.PHYSICAL)) {
 	    	System.out.println("clicked block :"+event.getClickedBlock());
-			if (event.getClickedBlock().hasMetadata("mine")) {
-				FixedMetadataValue val  = (FixedMetadataValue) event.getClickedBlock().getMetadata("mine").get(0);
-				CustomLandmine mine = (CustomLandmine) WeaponManager.getWeaponByName(""+val.value());
-				if (mine == null)
-					return;
-				mine.explode(event.getClickedBlock().getLocation(), mine.radius);
-				
-			}
+
 			System.out.println("test has metadata mineother");
 			if (event.getClickedBlock().hasMetadata("mineother")) {
 				System.out.println("ici");
@@ -113,6 +107,7 @@ public class WeaponEvent implements Listener{
 				event.getClickedBlock().setType(Material.AIR);
 			}
 	    }
+	    */
 	}
 	
 	/*
