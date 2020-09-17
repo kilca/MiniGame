@@ -47,7 +47,7 @@ public class ArenaEditGUI implements Listener {
 	private final String spawnShow = "Show Spawn";
 	
 	private final String specLoc = "Set Spec Loc";
-	
+	private final String openArena = "Open/Close Arena";
 	
 	//peut etre pas une bonne idée la boussole car marche pas avec WorldEdit
 
@@ -133,6 +133,12 @@ public class ArenaEditGUI implements Listener {
 		itemSpecSetM.setDisplayName(specLoc);
 		itemSpecSet.setItemMeta(itemSpecSetM);
 		
+		Material openMat = (a.isOpen ? Material.GREEN_WOOL : Material.RED_WOOL);
+		ItemStack itemOpen = new ItemStack(openMat);
+		ItemMeta itemOpenM = itemOpen.getItemMeta();
+		itemOpenM.setDisplayName(openArena);
+		itemOpen.setItemMeta(itemOpenM);
+		
 		inv.setItem(0, itemPos1);
 		inv.setItem(1, itemPos2);
 		inv.setItem(2, itemInfo);
@@ -143,7 +149,8 @@ public class ArenaEditGUI implements Listener {
 		inv.setItem(7, itemSpawnClear);
 		inv.setItem(8, itemSpawnShow);
 		inv.setItem(9, itemSpecSet);
-		inv.setItem(10, a.weapon.getItem());
+		inv.setItem(10, itemOpen);
+		inv.setItem(11, a.weapon.getItem());
 		
 		player.openInventory(inv);
 		
@@ -269,13 +276,16 @@ public class ArenaEditGUI implements Listener {
 					break;
 				case spawnShow:
 					for(Location l : ar.spawnLocs) {
-						l.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, l.getX(), l.getY()+2,l.getZ(), 5);
+						l.getWorld().spawnParticle(Particle.BUBBLE_COLUMN_UP, l.getX(), l.getY()+2,l.getZ(), 5);
 					}
 					player.sendMessage("Spawn Location Shown");
 					break;
 				case specLoc:
 					ar.specLoc = player.getLocation();
 					player.sendMessage("Spec Location Set");
+					break;
+				case openArena:
+					OpenCloseArena(ar,player);
 					break;
 				default:
 					return;
@@ -292,7 +302,9 @@ public class ArenaEditGUI implements Listener {
 		
 	}
 	
-	
+	public void OpenCloseArena(Arena ar, Player player) {
+		ar.isOpen =!ar.isOpen;
+	}
 	/*
 	public void ShowItemList(Arena ar, Player player) {
 		

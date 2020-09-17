@@ -1,9 +1,11 @@
 package poly.bedtech.commands;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import poly.bedtech.LimaMain;
 import poly.bedtech.arena.Arena;
 import poly.bedtech.arena.ArenaEditGUI;
 import poly.bedtech.arena.ArenaManager;
@@ -24,6 +26,7 @@ private Player player;
 		String arg0 = "";
 		String arg1 = null;
 		
+		
 		if (args.length > 0)
 			arg0 = args[0];
 		
@@ -31,6 +34,8 @@ private Player player;
 			arg1 = args[1];
 			
 			System.out.println(args[0]);
+		
+
 			
 		switch(arg0) {
 		
@@ -39,9 +44,17 @@ private Player player;
 				sender.sendMessage("give [item]");
 				break;
 			case "list":
+				if (!player.isOp()) {
+					player.sendMessage("You need to be op to perform this command");
+					return;
+				}
 				WeaponManager.showItemList(player);
 				break;
 			case "give":
+				if (!player.isOp()) {
+					player.sendMessage("You need to be op to perform this command");
+					return;
+				}
 				if (arg1 != null) {
 					ItemStack item = WeaponManager.getItemByName(arg1);
 					if (item != null)

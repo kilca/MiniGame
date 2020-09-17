@@ -55,6 +55,12 @@ public class CommandArena extends SubCommand {
 				break;
 		
 			case "create":
+				
+				if (!player.isOp()) {
+					player.sendMessage("You need to be op to perform this command");
+					return;
+				}
+				
 				if (arg1 != null) {
 					if (ArenaManager.addArena(new Arena(arg1,player.getWorld()))) {
 						player.sendMessage("arena created");
@@ -64,6 +70,12 @@ public class CommandArena extends SubCommand {
 				}
 				break;
 			case "edit":
+				
+				if (!player.isOp()) {
+					player.sendMessage("You need to be op to perform this command");
+					return;
+				}
+				
 				if (arg1 != null) {
 					Arena ar = ArenaManager.getArenaByName(arg1);
 					if (ar == null) {
@@ -79,7 +91,10 @@ public class CommandArena extends SubCommand {
 			case "edititem":
 				
 				System.out.println(arg1);
-				
+				if (!player.isOp()) {
+					player.sendMessage("You need to be op to perform this command");
+					return;
+				}
 				if (arg1 != null) {
 					Arena ar = ArenaManager.getArenaByName(arg1);
 					if (ar == null) {
@@ -95,7 +110,10 @@ public class CommandArena extends SubCommand {
 				break;
 					
 			case "remove":
-				
+				if (!player.isOp()) {
+					player.sendMessage("You need to be op to perform this command");
+					return;
+				}
 				if (arg1 != null) {
 					Arena ar = ArenaManager.getArenaByName(arg1);
 					if (ar == null) {
@@ -121,7 +139,7 @@ public class CommandArena extends SubCommand {
 					
 					
 					ar.joinArena(player);
-					player.sendMessage(ar.getPlayerCount());
+					player.sendMessage("need "+ar.getNumberPlayerNeeded()+" more players");
 				}
 
 				break;
@@ -135,7 +153,7 @@ public class CommandArena extends SubCommand {
 					}
 					
 					ar.leaveArena(player);
-					player.sendMessage(ar.getPlayerCount());
+					player.sendMessage("it now need "+ar.getNumberPlayerNeeded()+" more players");
 				}
 
 				break;

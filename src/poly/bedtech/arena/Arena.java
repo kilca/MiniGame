@@ -40,7 +40,7 @@ public class Arena {
 	//default inventory .. don't modify except config
 	public CustomWeapon weapon;
 	
-	public List<Player> players = new ArrayList<Player>();
+	public List<ArenaPlayer> players = new ArrayList<ArenaPlayer>();
 	
 	public int minPlayer = 2;
 	public int maxPlayer = 99;
@@ -145,6 +145,9 @@ public class Arena {
 	}
 	
 	public void saveConfig(LimaMain limInstance) {
+		
+		System.out.println("We save the config");
+		
 		String def = "arenas."+name+".";
 		
 		limInstance.getConfig().set(def+"name", this.name);
@@ -173,14 +176,16 @@ public class Arena {
 		limInstance.getConfig().set(def+"minPlayer", minPlayer);
 		limInstance.getConfig().set(def+"maxPlayer", maxPlayer);
 		
+		limInstance.getConfig().set(def+"isOpen", isOpen);
+		
 		limInstance.getConfig().set(def+"spawnlocs", null); 
 		
 		for(int i=0;i<spawnLocs.size();i++) {
+			
 			Location l = spawnLocs.get(i);
 			limInstance.getConfig().set(def+"spawnlocs."+i+".x", l.getX());
 			limInstance.getConfig().set(def+"spawnlocs."+i+".y", l.getY());
 			limInstance.getConfig().set(def+"spawnlocs."+i+".z", l.getZ());
-			limInstance.getConfig().set(def+"spawnlocs."+i+".world", l.getWorld().getName());
 		}
 		
 		limInstance.saveConfig();
@@ -188,11 +193,30 @@ public class Arena {
 	}
 	
 	private List<Player> getAllPlayers(){
+		ArrayList<Player> pp = new ArrayList<Player>();
+		for(ArenaPlayer p : players) {
+			pp.add(p.player);
+		}
+		return pp;
+		
+	}
+	
+	private List<ArenaPlayer> getAllArenaPlayers(){
 		return players;
 		
 	}
 	
+	public boolean canStartGame() {
+		if (players.size() < minPlayer)
+			return false;
+		
+		return true;
+		
+	}
+	
 	public void tryBeginGame() {
+		
+		
 		
 		
 		Arena self = this;
@@ -202,6 +226,14 @@ public class Arena {
 			@Override
 			public void run() {
 		
+				if (!canStartGame())
+					this.cancel();
+				
+				for(Player p : self.getAllPlayers()) {
+					if (p == null) {
+						self.getAllPlayers().remove(p);
+					}
+				}
 				
 				for(Player p : self.getAllPlayers()) {
 					p.sendMessage("game begin in :"+count);
@@ -219,11 +251,49 @@ public class Arena {
 		borderRun.runTaskTimer(LimaMain.INSTANCE, 0, 20);
 		
 	}
-	
+	//https://bukkit.org/threads/saving-custom-inventory.474847/
 	private void startGame() {
 		System.out.println("game started");
 		
+		ItemStack item = weapon.getItem();
+		
+		int j = 0;
+		for(int i=0;i<players.size();i++) {
+			Player p = players.get(i).player;
+			
+            p.setHealth(20.0);
+            p.setFoodLevel(20);
+            p.setFireTicks(0);
+            
+            savePlayerData(p);
+            
+			p.teleport(spawnLocs.get(j));
+			
+			p.getInventory().clear();
+			p.getInventory().addItem(item);
+			
+			
+			j++;
+			if (j >= spawnLocs.size())
+				j= 0;
+		}
+		
 	}
+	
+	private void savePlayerData(Player p) {
+		
+		LimaMain limInstance = LimaMain.INSTANCE;
+		limInstance.getConfig().set("players."+p.getName()+".inventory.content", p.getInventory().getContents());
+		Location l = p.getLocation();
+		limInstance.getConfig().set("players."+p.getName()+".loc.x", l.getX());
+		limInstance.getConfig().set("players."+p.getName()+".loc.y", l.getY());
+		limInstance.getConfig().set("players."+p.getName()+".loc.z", l.getZ());
+		limInstance.getConfig().set("players."+p.getName()+".loc.world", l.getX());
+		
+		
+		limInstance.saveConfig();
+	}
+	
 	
 	public void joinArena(Player player) {
 		
@@ -239,22 +309,117 @@ public class Arena {
 			return;
 		}
 		
+		players.add(new ArenaPlayer(player));
 		player.sendMessage("arena joined");
 		tryBeginGame();
+		
+	}
+	
+	
+	private void bringBack(Player p) {
+		
+		
+		LimaMain limInstance = LimaMain.INSTANCE;
+		
+		ItemStack[] contents = (ItemStack[]) LimaMain.INSTANCE.getConfig().get("players."+p.getName()+".inventory.content");
+		if (contents == null) {
+			p.sendMessage("Sorry, Can't retrieve your stuff");
+		}else {
+			p.getInventory().setContents(contents);	
+		}
+		
+		double x = limInstance.getConfig().getDouble("players."+p.getName()+".loc.x");
+		double y = limInstance.getConfig().getDouble("players."+p.getName()+".loc.y");
+		double z = limInstance.getConfig().getDouble("players."+p.getName()+".loc.z");
+		String w = limInstance.getConfig().getString("players."+p.getName()+".world");
+		
+		if (x == 0 && y == 0 && z == 0) {
+			p.sendMessage("Sorry, can't find your old location");
+			if (w == "")
+				w = "world";
+		}
+		World world = limInstance.getServer().getWorld(w);
+		if (world == null)
+			p.sendMessage("Error, old world not found");
+		else {
+			Location l = new Location(world,x,y,z);
+			p.teleport(l);
+		}
+		
+		limInstance.getConfig().set("players."+p.getName(), "");
+		
+		limInstance.saveConfig();
 		
 	}
 	
 	public void leaveArena(Player player) {
 		
 		if (players.contains(player)) {
+			System.out.println("leaved");
 			players.remove(player);
+			
+			checkGameEnded();
+			
 		}
+
+	}
+
+	
+	private void checkGameEnded() {
 		
+		int count = 0;
+		Player winner = null;
+		for(ArenaPlayer p : players) {
+			if (p.isInGame) {
+				count++;
+				winner = p.player;
+			}
+		}
+		if (count == 1) {
+			congratWinner(winner);
+			endGame();
+		}else if (count == 0) {
+			endGame();
+		}
+	}
+	
+	public void endGame() {
+		for(Player p : getAllPlayers()) {
+			leaveArena(p);
+		}
+		players.clear();
+	}
+	
+	private void congratWinner(Player winner) {
+
+		LimaMain.INSTANCE.getServer().broadcastMessage("Bravo a :"+winner.getName());
 		
 	}
-	public String getPlayerCount() {
+	
+	public void goSpec(Player player) {
 		
-		return players.size()+"/"+maxPlayer;
+		if (players.contains(player)) {
+			if (specLoc == null)
+				leaveArena(player);
+			else {
+				players.get(players.indexOf(player)).becomeSpec();
+				player.teleport(specLoc);
+			}
+		}
+		checkGameEnded();
+
+	}
+	
+	public int getNumberPlayerNeeded() {
+		
+		System.out.println("min player : "+minPlayer);
+		System.out.println("player size :" +players.size());
+		
+		int res = minPlayer - players.size();
+		if (res < 0)
+			return 0;
+		else
+			return res;
 		
 	}
 
