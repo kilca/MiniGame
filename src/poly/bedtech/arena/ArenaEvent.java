@@ -8,14 +8,14 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import poly.bedtech.LimaMain;
+import poly.bedtech.MinGame;
 
 public class ArenaEvent implements Listener{
 
-	LimaMain lima;
+	MinGame lima;
 	public ArenaEvent(){
 		super();
-		lima = LimaMain.INSTANCE;
+		lima = MinGame.INSTANCE;
 	}
 	
 	//on est sympa quand même
@@ -48,9 +48,14 @@ public class ArenaEvent implements Listener{
     
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
+    	
+    	System.out.println("A player is dead");
+    	
     	Player p = event.getEntity();
     	Arena a = ArenaManager.getArena(p);
     	if (a != null) {
+    		System.out.println("arena found");
+    		p.setHealth(20);
     		a.goSpec(p);
     	}
     }

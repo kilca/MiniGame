@@ -1,12 +1,9 @@
-name: BedTech
+name: MinGame
 version: 1.0
 author: Nous
-main: poly.bedtech.LimaMain
+main: poly.bedtech.MinGame
 api-version: 1.13
 commands:
-  bonjour:
-    description: Hello World
-    permission: bonjour.use
-  lima:
-    description: Lima command
+  mg:
+    description: MinGame command
     permission: lima.use

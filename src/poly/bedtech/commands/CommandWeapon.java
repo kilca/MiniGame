@@ -5,7 +5,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import poly.bedtech.LimaMain;
+import poly.bedtech.MinGame;
 import poly.bedtech.arena.Arena;
 import poly.bedtech.arena.ArenaEditGUI;
 import poly.bedtech.arena.ArenaManager;

@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
-import poly.bedtech.LimaMain;
+import poly.bedtech.MinGame;
 
 public class CustomGun extends CustomWeapon{
 
@@ -83,7 +83,7 @@ public class CustomGun extends CustomWeapon{
 			Entity ball = player.launchProjectile(projectileClass);
 			//Entity ball = player.getWorld().spawn(player.getEyeLocation(), projectileClass);
 			ball.setVelocity(shootRotation);
-			ball.setMetadata("gun", new FixedMetadataValue(LimaMain.INSTANCE,this.name));
+			ball.setMetadata("gun", new FixedMetadataValue(MinGame.INSTANCE,this.name));
 		}
 		this.cancelZoom(player);
 		event.setCancelled(true);

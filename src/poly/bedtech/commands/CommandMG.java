@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 
-public class CommandLima implements CommandExecutor{
+public class CommandMG implements CommandExecutor{
 	
 	//Classe générale appelant les autres classes (handler)
 	
@@ -46,7 +46,7 @@ public class CommandLima implements CommandExecutor{
 
 		}else {
 			
-			sender.sendMessage(ChatColor.RED+"Please specify which command or type help");	
+			sender.sendMessage(ChatColor.RED+"Wrong command : try [arena]/[weapon] help");	
 		}
 		
 		

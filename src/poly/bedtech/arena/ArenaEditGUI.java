@@ -27,7 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
-import poly.bedtech.LimaMain;
+import poly.bedtech.MinGame;
 import poly.bedtech.weapons.CustomWeapon;
 import poly.bedtech.weapons.WeaponManager;
 
@@ -294,7 +294,7 @@ public class ArenaEditGUI implements Listener {
 			}
 		
 		}
-		ar.saveConfig(LimaMain.INSTANCE);
+		ar.saveConfig(MinGame.INSTANCE);
 		
 		showUI(player,ar);
 		

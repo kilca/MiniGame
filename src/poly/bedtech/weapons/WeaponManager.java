@@ -20,7 +20,7 @@ import org.bukkit.entity.WitherSkull;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-import poly.bedtech.LimaMain;
+import poly.bedtech.MinGame;
 
 public class WeaponManager {
 
@@ -199,7 +199,7 @@ public class WeaponManager {
 	}
 
 	
-	public static void loadWeapons(LimaMain plugin) {
+	public static void loadWeapons(MinGame plugin) {
 		File f = new File(plugin.getDataFolder(),"weapons.yml");
 		cfg = YamlConfiguration.loadConfiguration(f);
 		

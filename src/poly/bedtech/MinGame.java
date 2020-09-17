@@ -5,15 +5,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import poly.bedtech.arena.ArenaEditGUI;
 import poly.bedtech.arena.ArenaEvent;
 import poly.bedtech.arena.ArenaManager;
-import poly.bedtech.commands.CommandLima;
+import poly.bedtech.commands.CommandMG;
 import poly.bedtech.weapons.WeaponEvent;
 import poly.bedtech.weapons.WeaponManager;
 
-public class LimaMain extends JavaPlugin {
+public class MinGame extends JavaPlugin {
 
 	//https://www.spigotmc.org/threads/multiple-config.56384/
 	
-    public static LimaMain INSTANCE;
+    public static MinGame INSTANCE;
 	
     private void initListeners() {
     	
@@ -21,6 +21,9 @@ public class LimaMain extends JavaPlugin {
     	getServer().getPluginManager().registerEvents(new WeaponEvent(), this);
     	getServer().getPluginManager().registerEvents(new ArenaEvent(), this);
     }
+    /*
+     * Item (baaseball) not found
+     * */
     
 	@Override
 	public void onEnable() {
@@ -36,10 +39,10 @@ public class LimaMain extends JavaPlugin {
 		WeaponManager.loadWeapons(this);
 		ArenaManager.setupConfigs(this);
 		
-		CommandLima cl = new CommandLima();
+		CommandMG cl = new CommandMG();
 		cl.setup();
 		
-		getCommand("lima").setExecutor(cl);
+		getCommand("mg").setExecutor(cl);
 		
 		initListeners();
 		

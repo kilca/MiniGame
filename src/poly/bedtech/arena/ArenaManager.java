@@ -14,7 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.minecraft.server.v1_15_R1.EntityFox.i;
-import poly.bedtech.LimaMain;
+import poly.bedtech.MinGame;
 import poly.bedtech.StructureAPI;
 import poly.bedtech.weapons.CustomWeapon;
 import poly.bedtech.weapons.WeaponManager;
@@ -28,7 +28,7 @@ public class ArenaManager {
 	private static List<Arena> arenas = new ArrayList<Arena>();
 	
 	//A Tester
-	public static void setupConfigs(LimaMain lima) {
+	public static void setupConfigs(MinGame lima) {
 		
 		System.out.println("We setup the config");
 		
@@ -190,7 +190,7 @@ public class ArenaManager {
 			
 		}
 		
-		arena.saveConfig(LimaMain.INSTANCE);
+		arena.saveConfig(MinGame.INSTANCE);
 		
 		arenas.add(arena);
 		return true;

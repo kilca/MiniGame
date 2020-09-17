@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import poly.bedtech.LimaMain;
+import poly.bedtech.MinGame;
 import poly.bedtech.weapons.CustomWeapon;
 import poly.bedtech.weapons.WeaponManager;
 
@@ -134,7 +134,7 @@ public class Arena {
 			
 			
 		};
-		borderRun.runTaskTimer(LimaMain.INSTANCE, 0, 20);
+		borderRun.runTaskTimer(MinGame.INSTANCE, 0, 20);
 		//Bukkit.getScheduler().runTaskTimer(LimaMain.INSTANCE, borderRun,0,20);
 		
 		
@@ -144,7 +144,7 @@ public class Arena {
 		return name;
 	}
 	
-	public void saveConfig(LimaMain limInstance) {
+	public void saveConfig(MinGame limInstance) {
 		
 		System.out.println("We save the config");
 		
@@ -226,8 +226,10 @@ public class Arena {
 			@Override
 			public void run() {
 		
-				if (!canStartGame())
+				if (!canStartGame()) {
 					this.cancel();
+					return;
+				}
 				
 				for(Player p : self.getAllPlayers()) {
 					if (p == null) {
@@ -248,18 +250,20 @@ public class Arena {
 			
 			
 		};
-		borderRun.runTaskTimer(LimaMain.INSTANCE, 0, 20);
+		borderRun.runTaskTimer(MinGame.INSTANCE, 0, 20);
 		
 	}
 	//https://bukkit.org/threads/saving-custom-inventory.474847/
 	private void startGame() {
-		System.out.println("game started");
+		
 		
 		ItemStack item = weapon.getItem();
 		
 		int j = 0;
 		for(int i=0;i<players.size();i++) {
 			Player p = players.get(i).player;
+			
+			p.sendMessage("GAME STARTED");
 			
             p.setHealth(20.0);
             p.setFoodLevel(20);
@@ -282,7 +286,7 @@ public class Arena {
 	
 	private void savePlayerData(Player p) {
 		
-		LimaMain limInstance = LimaMain.INSTANCE;
+		MinGame limInstance = MinGame.INSTANCE;
 		limInstance.getConfig().set("players."+p.getName()+".inventory.content", p.getInventory().getContents());
 		Location l = p.getLocation();
 		limInstance.getConfig().set("players."+p.getName()+".loc.x", l.getX());
@@ -319,9 +323,9 @@ public class Arena {
 	private void bringBack(Player p) {
 		
 		
-		LimaMain limInstance = LimaMain.INSTANCE;
+		MinGame limInstance = MinGame.INSTANCE;
 		
-		ItemStack[] contents = (ItemStack[]) LimaMain.INSTANCE.getConfig().get("players."+p.getName()+".inventory.content");
+		ItemStack[] contents = (ItemStack[]) MinGame.INSTANCE.getConfig().get("players."+p.getName()+".inventory.content");
 		if (contents == null) {
 			p.sendMessage("Sorry, Can't retrieve your stuff");
 		}else {
@@ -392,7 +396,7 @@ public class Arena {
 	
 	private void congratWinner(Player winner) {
 
-		LimaMain.INSTANCE.getServer().broadcastMessage("Bravo a :"+winner.getName());
+		MinGame.INSTANCE.getServer().broadcastMessage("Bravo a :"+winner.getName());
 		
 	}
 	

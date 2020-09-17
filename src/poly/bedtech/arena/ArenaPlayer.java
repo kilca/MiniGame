@@ -24,10 +24,11 @@ public class ArenaPlayer {
     	if(object == null)
     		return false;
     	if (object instanceof Player) {
-    		return player.equals((Player) object);
+    		Player p  = (Player) object;
+    		return player.getName().equals(p.getName());
     	}else if (object instanceof ArenaPlayer) {
     		ArenaPlayer ap = (ArenaPlayer) object;
-    		return this.player.equals(ap.player);
+    		return this.player.getName().equals(ap.player.getName());
     	}
 		return false;
 

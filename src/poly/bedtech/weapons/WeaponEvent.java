@@ -76,7 +76,7 @@ public class WeaponEvent implements Listener{
 		
 		if (item == null)
 			return;
-		String name = item.getItemMeta().getDisplayName();
+		String name = item.getItemMeta().getLocalizedName();
 		CustomWeapon weapon = (CustomWeapon) WeaponManager.getWeaponByName(name);
 
 		if (weapon == null) {
