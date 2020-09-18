@@ -263,8 +263,7 @@ public class ArenaEditGUI implements Listener {
 					ArenaManager.loadArena(player, ar);
 					break;
 				case borderName:
-					System.out.println("border");
-					ar.changeBorder();
+					ar.changeBorder(player);
 					break;
 				case spawnAdd:
 					ar.spawnLocs.add(player.getLocation());
@@ -276,7 +275,17 @@ public class ArenaEditGUI implements Listener {
 					break;
 				case spawnShow:
 					for(Location l : ar.spawnLocs) {
-						l.getWorld().spawnParticle(Particle.BUBBLE_COLUMN_UP, l.getX(), l.getY()+2,l.getZ(), 5);
+						l.getWorld().spawnParticle(Particle.DRIP_LAVA, l.getX(), l.getY()+2,l.getZ(), 2);
+						l.getWorld().spawnParticle(Particle.DRIP_LAVA, l.getX(), l.getY()+1.5f,l.getZ(), 2);
+						l.getWorld().spawnParticle(Particle.DRIP_LAVA, l.getX(), l.getY()+1,l.getZ(), 2);
+						l.getWorld().spawnParticle(Particle.DRIP_LAVA, l.getX(), l.getY()+0.5f,l.getZ(), 2);
+					}
+					if (ar.specLoc != null) {
+						Location l = ar.specLoc;
+						l.getWorld().spawnParticle(Particle.DRIP_WATER, l.getX(), l.getY()+2,l.getZ(), 2);
+						l.getWorld().spawnParticle(Particle.DRIP_WATER, l.getX(), l.getY()+1.5f,l.getZ(), 2);
+						l.getWorld().spawnParticle(Particle.DRIP_WATER, l.getX(), l.getY()+1,l.getZ(), 2);
+						l.getWorld().spawnParticle(Particle.DRIP_WATER, l.getX(), l.getY()+0.5f,l.getZ(), 2);
 					}
 					player.sendMessage("Spawn Location Shown");
 					break;

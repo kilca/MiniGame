@@ -44,17 +44,9 @@ private Player player;
 				sender.sendMessage("give [item]");
 				break;
 			case "list":
-				if (!player.isOp()) {
-					player.sendMessage("You need to be op to perform this command");
-					return;
-				}
 				WeaponManager.showItemList(player);
 				break;
 			case "give":
-				if (!player.isOp()) {
-					player.sendMessage("You need to be op to perform this command");
-					return;
-				}
 				if (arg1 != null) {
 					ItemStack item = WeaponManager.getItemByName(arg1);
 					if (item != null)

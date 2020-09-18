@@ -1,10 +1,14 @@
 package poly.bedtech.commands;
 
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import net.md_5.bungee.api.ChatColor;
+import poly.bedtech.ItemUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,11 +32,13 @@ public class CommandMG implements CommandExecutor{
 		return subCommands.get(s);
 	}
 	
+	
 	//on pourrait rendre plus propre le hasArgs
 	@Override
 	public boolean onCommand(CommandSender sender, Command arg1, String arg2, String[] args) {
 		
 		boolean hasArgs = (args != null) && (args.length >1);
+		
 		
 		if (hasArgs){
 			String subArray[] = Arrays.copyOfRange(args, 1, args.length);

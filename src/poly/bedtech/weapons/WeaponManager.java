@@ -35,7 +35,7 @@ public class WeaponManager {
 	public static CustomWeapon getWeaponByName(String s) {
 		
 		for(CustomWeapon w : weapons) {
-			if (w.localizedName.equals(s))
+			if (w.weaponName.equals(s))
 				return w;
 			
 		}
@@ -45,7 +45,7 @@ public class WeaponManager {
 	public static ItemStack getItemByName(String s) {
 		
 		for(CustomWeapon w : weapons) {
-			if (w.localizedName.equals(s))
+			if (w.weaponName.equals(s))
 				return w.getItem();
 			
 		}
@@ -56,7 +56,7 @@ public class WeaponManager {
 	public static CustomWeapon getWeaponByNameMaterial(String s, Material m) {
 		
 		for(CustomWeapon w : weapons) {
-			if (w.localizedName.equals(s) && w.material.equals(m))
+			if (w.weaponName.equals(s) && w.material.equals(m))
 				return w;
 			
 		}
@@ -68,7 +68,7 @@ public class WeaponManager {
 		
 		for(int i=0;i<WeaponManager.weapons.size();i++) {
 			
-			p.sendMessage(i+")"+WeaponManager.weapons.get(i).localizedName);
+			p.sendMessage(i+")"+WeaponManager.weapons.get(i).weaponName);
 			
 		}
 		

@@ -27,7 +27,7 @@ public abstract class CustomWeapon{
 	private static int staticCount = 0;
 	private int weaponIndex;
 	
-	public String localizedName;//name for localize
+	public String weaponName;//name for localize
 	public String name;//shown name
 	
 	public WeaponType type;
@@ -47,11 +47,11 @@ public abstract class CustomWeapon{
 		return weaponIndex;
 	}
 	
-	public CustomWeapon(String localizedName, String name, String id) {
+	public CustomWeapon(String weaponName, String name, String id) {
 		weaponIndex = staticCount;
 		staticCount++;
 		
-		this.localizedName = localizedName;
+		this.weaponName = weaponName;
 		this.name = name;
 		this.id = id;
 		
@@ -86,7 +86,7 @@ public abstract class CustomWeapon{
 		ItemStack item =  new ItemStack(material);
 		ItemMeta itemM = item.getItemMeta();
 		itemM.setDisplayName(translateColor(name));
-		itemM.setLocalizedName(localizedName);
+		itemM.setLocalizedName(weaponName);
 		if (!lore.isEmpty())
 			itemM.setLore(lore);
 		

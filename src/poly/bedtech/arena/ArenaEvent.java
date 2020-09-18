@@ -7,9 +7,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 
 import net.minecraft.server.v1_15_R1.PacketPlayInClientCommand;
 import net.minecraft.server.v1_15_R1.PacketPlayInClientCommand.EnumClientCommand;
@@ -51,6 +53,17 @@ public class ArenaEvent implements Listener{
     	}
     }
     
+    /*
+    @EventHandler
+    public void onThrow(PlayerDropItemEvent e){
+        Item t = e.getItemDrop();
+        if (t == Material.IRON_AXE){
+            e.setCancelled(true);
+        }else{
+            e.setCancelled(false);
+        }
+    }
+    */
     
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
@@ -63,6 +76,10 @@ public class ArenaEvent implements Listener{
     	
     	Arena a = ArenaManager.getArena(p);
     	if (a != null) {
+    		
+    		for(ItemStack i : event.getDrops()) {
+    			i.setAmount(0);
+    		}
     		
     		Bukkit.getScheduler().scheduleSyncDelayedTask(MinGame.INSTANCE, new Runnable() {
     		    @Override

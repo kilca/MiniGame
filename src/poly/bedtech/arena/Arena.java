@@ -51,6 +51,7 @@ public class Arena {
 	public List<Location> spawnLocs;
 	public Location specLoc;
 	
+	public List<ItemStack> weapons = new ArrayList<ItemStack>();
 	
 	public Arena(String name, World world) {
 		
@@ -84,13 +85,16 @@ public class Arena {
 		
 	}
 	
-	public void changeBorder() {
+	public void changeBorder(Player p) {
 		
-		if (borderRun == null)
+		if (borderRun == null) {
+			p.sendMessage("Border shown, (remember to turn it off)");
 			showBorder();
-		else
+		}
+		else {
+			p.sendMessage("Border hidden");
 			unShowBorder();
-		
+		}
 	}
 	
 	private void unShowBorder() {
@@ -102,23 +106,32 @@ public class Arena {
 	
 	//Todo fix error
 	private void showBorder() {
+		
+		if (loc1 == null || loc2 == null)
+			return;
+		
+		
 		borderRun = new BukkitRunnable() {
 			@Override
 			public void run() {
 				
-				int startX = Math.min(loc1.getBlockX(), loc2.getBlockX());
-				int startY = Math.min(loc1.getBlockY(), loc2.getBlockY());
-				int startZ = Math.min(loc1.getBlockZ(), loc2.getBlockZ());
-				int endX = Math.max(loc1.getBlockX(), loc2.getBlockX());
-				int endY = Math.max(loc1.getBlockX(), loc2.getBlockY());
-				int endZ = Math.max(loc1.getBlockX(), loc2.getBlockZ());
 				
-				for (double x = startX + 0.5; x <= endX + 1; x++) {
-		            for (double y = startY; y <= endY + 1; y++) {
-		                for (double z = startZ + 0.5; z <= endZ + 1; z++) {
-		                        if ((int) x == startX || (int) x == endX || 
-		                            (int) y == startY || (int) y == endY + 1|| 
-		                            (int) z == startZ || (int) z == endZ) {
+				
+				int startX = (int) Math.min(loc1.getX(), loc2.getX());
+				int startY = (int) Math.min(loc1.getY(), loc2.getY());
+				int startZ = (int) Math.min(loc1.getZ(), loc2.getZ());
+				int endX = (int) Math.max(loc1.getX(), loc2.getX());
+				int endY = (int) Math.max(loc1.getY(), loc2.getY());
+				int endZ = (int) Math.max(loc1.getZ(), loc2.getZ());
+				
+				
+				for (int x =  startX ; x <= endX; x++) {
+		            for (int y =  startY; y <= endY; y++) {
+		            	//System.out.println(y);
+		                for (int z =  startZ; z <= endZ; z++) {
+		                        if (x == startX || x == endX || 
+		                            y == startY || y == endY || 
+		                            z == startZ || z == endZ) {
 		                	        //loc1.getWorld().spawnParticle(Particle.REDSTONE, (float) x, (float) y,(float) z, 1, new Particle.DustOption(Color.RED,1));
 		                        	loc1.getWorld().spawnParticle(Particle.BARRIER, (float) x, (float) y,(float) z, 1);
 		                        	/*
@@ -174,7 +187,7 @@ public class Arena {
 			limInstance.getConfig().set(def+"specLoc.z", specLoc.getZ());
 		}
 		
-		limInstance.getConfig().set(def+"weapon", weapon.localizedName);
+		limInstance.getConfig().set(def+"weapon", weapon.weaponName);
 		
 		limInstance.getConfig().set(def+"minPlayer", minPlayer);
 		limInstance.getConfig().set(def+"maxPlayer", maxPlayer);
@@ -271,9 +284,12 @@ public class Arena {
 		
 		removeInexistentPlayer(this);
 		
+		ArenaManager.loadArena(null, this);
+		
 		isStarted = true;
 		
 		ItemStack item = weapon.getItem();
+		weapons.add(item);
 		
 		int j = 0;
 		for(int i=0;i<players.size();i++) {

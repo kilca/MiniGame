@@ -23,7 +23,7 @@ public class ArenaManager {
 
 	//singleton ?
 	
-	private static final int maxArenaDist = 100;
+	private static final int maxArenaDist = 64;
 	
 	private static List<Arena> arenas = new ArrayList<Arena>();
 	
@@ -144,6 +144,7 @@ public class ArenaManager {
 		
 		if (ar.loc1.distance(ar.loc2) > maxArenaDist) {
 			p.sendMessage("Error, location distance too high");
+			return;
 		}
 		
 		Location l1 = ar.loc1;
@@ -158,12 +159,12 @@ public class ArenaManager {
 	
 	public static void loadArena(Player p, Arena ar) {
 		
-		if (ar.loc1 == null || ar.loc2 == null)
+		if (p != null && (ar.loc1 == null || ar.loc2 == null))
 			p.sendMessage("Error, location not defined");
 		
 		Material[][][] m = StructureAPI.load(ar.name);
 		
-		if (m == null) {
+		if (p != null && m == null) {
 			p.sendMessage("schematic error");
 		}
 		
@@ -178,7 +179,8 @@ public class ArenaManager {
         Location tempLocation = new Location(ar.loc1.getWorld(),minX,minY,minZ);
         
 		StructureAPI.paste(m,tempLocation);
-		p.sendMessage("arena loaded");
+		if (p != null)
+			p.sendMessage("arena loaded");
 	}
 	
 	

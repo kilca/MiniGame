@@ -9,7 +9,51 @@ import poly.bedtech.commands.CommandMG;
 import poly.bedtech.weapons.WeaponEvent;
 import poly.bedtech.weapons.WeaponManager;
 
+/*Bug:
+ * 
+ * Bug 1.16
+ * 
+ * Direct respawn lorsque l'arene est fini et j'ai gagné
+ * (game already started ??)
+ * 
+ * 
+ * Item a détruire
+ * 
+ * 
+ * X	Possibilité que l'affichage des barriere fasse laguer si trop gros
+ * 
+ * X	join arene meme si op
+ * 
+ * rejoindre arene alors que en cours (relance timer et tout)
+ * 
+ * double timer
+ * 
+ * broadcast a tt le monde : truc a rejoin, faites ... pour rejoindre l'arene
+ * 
+ * 
+ * Spawn des fois weapon not found
+ * 
+ * Rennommer arme marche
+ * 
+ * bloquer le fait de rejoindre si déja rejoint autre arene
+ * 
+ * pas d'explosion
+ * 
+ * */
+
+/*
+ * Possibilite : calcul taille arene en f du volume
+ * 
+ * 
+ * 
+ * */
+
 /*TODO :
+ * 
+ * Fix Border effect	X
+ * Fix Spawn Loc effect	X
+ * 
+ * Change msg info
  * 
  *Config sert a stocker les messages custom
  *fichier player.yml 

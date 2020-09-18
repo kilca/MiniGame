@@ -71,10 +71,6 @@ public class CommandArena extends SubCommand {
 				break;
 			case "edit":
 				
-				if (!player.isOp()) {
-					player.sendMessage("You need to be op to perform this command");
-					return;
-				}
 				
 				if (arg1 != null) {
 					Arena ar = ArenaManager.getArenaByName(arg1);
@@ -91,10 +87,6 @@ public class CommandArena extends SubCommand {
 			case "edititem":
 				
 				System.out.println(arg1);
-				if (!player.isOp()) {
-					player.sendMessage("You need to be op to perform this command");
-					return;
-				}
 				if (arg1 != null) {
 					Arena ar = ArenaManager.getArenaByName(arg1);
 					if (ar == null) {
@@ -110,10 +102,6 @@ public class CommandArena extends SubCommand {
 				break;
 					
 			case "remove":
-				if (!player.isOp()) {
-					player.sendMessage("You need to be op to perform this command");
-					return;
-				}
 				if (arg1 != null) {
 					Arena ar = ArenaManager.getArenaByName(arg1);
 					if (ar == null) {
