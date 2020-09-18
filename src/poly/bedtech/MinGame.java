@@ -9,6 +9,15 @@ import poly.bedtech.commands.CommandMG;
 import poly.bedtech.weapons.WeaponEvent;
 import poly.bedtech.weapons.WeaponManager;
 
+/*TODO :
+ * 
+ *Config sert a stocker les messages custom
+ *fichier player.yml 
+ *récompense custom si on souhaite
+ *fichier arena.yml
+ * 
+ * */
+
 public class MinGame extends JavaPlugin {
 
 	//https://www.spigotmc.org/threads/multiple-config.56384/

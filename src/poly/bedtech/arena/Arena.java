@@ -40,7 +40,10 @@ public class Arena {
 	//default inventory .. don't modify except config
 	public CustomWeapon weapon;
 	
-	public List<ArenaPlayer> players = new ArrayList<ArenaPlayer>();
+	public List<Player> players = new ArrayList<Player>();
+	
+	//false is spectator and true is inGame
+	public List<Boolean> isInGame = new ArrayList<Boolean>();
 	
 	public int minPlayer = 2;
 	public int maxPlayer = 99;
@@ -193,18 +196,12 @@ public class Arena {
 	}
 	
 	private List<Player> getAllPlayers(){
-		ArrayList<Player> pp = new ArrayList<Player>();
-		for(ArenaPlayer p : players) {
-			pp.add(p.player);
-		}
-		return pp;
+		
+		return players;
+		
 		
 	}
 	
-	private List<ArenaPlayer> getAllArenaPlayers(){
-		return players;
-		
-	}
 	
 	public boolean canStartGame() {
 		if (players.size() < minPlayer)
@@ -212,6 +209,23 @@ public class Arena {
 		
 		return true;
 		
+	}
+	
+	public static void removeInexistentPlayer(Arena self) {
+		
+		//should not happen
+		if (self.players.size() != self.isInGame.size()) {
+			System.err.print("Err, player size different than spec size");
+			self.players.clear();
+			self.isInGame.clear();
+		}
+		
+		for(int i=0;i<self.players.size();i++) {
+			if (self.players.get(i) == null) {
+				self.players.remove(i);
+				self.isInGame.remove(i);
+			}
+		}
 	}
 	
 	public void tryBeginGame() {
@@ -231,11 +245,8 @@ public class Arena {
 					return;
 				}
 				
-				for(Player p : self.getAllPlayers()) {
-					if (p == null) {
-						self.getAllPlayers().remove(p);
-					}
-				}
+				removeInexistentPlayer(self);
+			
 				
 				for(Player p : self.getAllPlayers()) {
 					p.sendMessage("game begin in :"+count);
@@ -256,12 +267,17 @@ public class Arena {
 	//https://bukkit.org/threads/saving-custom-inventory.474847/
 	private void startGame() {
 		
+		//prendre en compte le fait qu'un joueur peut déco avant le lancement
+		
+		removeInexistentPlayer(this);
+		
+		isStarted = true;
 		
 		ItemStack item = weapon.getItem();
 		
 		int j = 0;
 		for(int i=0;i<players.size();i++) {
-			Player p = players.get(i).player;
+			Player p = players.get(i);
 			
 			p.sendMessage("GAME STARTED");
 			
@@ -276,6 +292,7 @@ public class Arena {
 			p.getInventory().clear();
 			p.getInventory().addItem(item);
 			
+			isInGame.set(i, true);
 			
 			j++;
 			if (j >= spawnLocs.size())
@@ -292,7 +309,7 @@ public class Arena {
 		limInstance.getConfig().set("players."+p.getName()+".loc.x", l.getX());
 		limInstance.getConfig().set("players."+p.getName()+".loc.y", l.getY());
 		limInstance.getConfig().set("players."+p.getName()+".loc.z", l.getZ());
-		limInstance.getConfig().set("players."+p.getName()+".loc.world", l.getX());
+		limInstance.getConfig().set("players."+p.getName()+".loc.world", l.getWorld().getName());
 		
 		
 		limInstance.saveConfig();
@@ -313,7 +330,9 @@ public class Arena {
 			return;
 		}
 		
-		players.add(new ArenaPlayer(player));
+		players.add(player);
+		isInGame.add(false);
+		
 		player.sendMessage("arena joined");
 		tryBeginGame();
 		
@@ -322,6 +341,7 @@ public class Arena {
 	
 	private void bringBack(Player p) {
 		
+		System.out.println("we bring back :"+p.getName());
 		
 		MinGame limInstance = MinGame.INSTANCE;
 		
@@ -332,66 +352,92 @@ public class Arena {
 			p.getInventory().setContents(contents);	
 		}
 		
-		double x = limInstance.getConfig().getDouble("players."+p.getName()+".loc.x");
-		double y = limInstance.getConfig().getDouble("players."+p.getName()+".loc.y");
-		double z = limInstance.getConfig().getDouble("players."+p.getName()+".loc.z");
-		String w = limInstance.getConfig().getString("players."+p.getName()+".world");
-		
-		if (x == 0 && y == 0 && z == 0) {
-			p.sendMessage("Sorry, can't find your old location");
-			if (w == "")
+		if (limInstance.getConfig().contains("players."+p.getName()+".loc.x")) {
+				
+			double x = limInstance.getConfig().getDouble("players."+p.getName()+".loc.x");
+			double y = limInstance.getConfig().getDouble("players."+p.getName()+".loc.y");
+			double z = limInstance.getConfig().getDouble("players."+p.getName()+".loc.z");
+			String w = limInstance.getConfig().getString("players."+p.getName()+".loc.world");
+			
+			if (x == 0 && y == 0 && z == 0) {
+				p.sendMessage("Sorry, can't find your old location");
+			}
+			if (w == null || w == "")
 				w = "world";
+			
+			World world = limInstance.getServer().getWorld(w);
+			if (world == null) {
+				System.err.println("Error, world :"+w+", not found for :"+p.getName());
+				p.sendMessage("Error, old world not found");
+			}
+			else {
+				Location l = new Location(world,x,y,z);
+				p.teleport(l);
+			}
+			
+			limInstance.getConfig().set("players."+p.getName(), "");
+		}else {
+			p.sendMessage("Sorry didn't find your data");
 		}
-		World world = limInstance.getServer().getWorld(w);
-		if (world == null)
-			p.sendMessage("Error, old world not found");
-		else {
-			Location l = new Location(world,x,y,z);
-			p.teleport(l);
-		}
-		
-		limInstance.getConfig().set("players."+p.getName(), "");
 		
 		limInstance.saveConfig();
 		
 	}
 	
-	public void leaveArena(Player player) {
+	public void leaveArena(Player player, boolean byCommand) {
 		
 		if (players.contains(player)) {
 			System.out.println("leaved");
-			players.remove(player);
+			int index = players.indexOf(player);
 			
-			checkGameEnded();
+			players.remove(index);
+			isInGame.remove(index);
+			
+			//if doesn't come back from endGame
+			bringBack(player);
+			
+			if (byCommand)
+				checkGameEnded();
 			
 		}
-
 	}
 
 	
-	private void checkGameEnded() {
+	private boolean checkGameEnded() {
+		
+		if (!isStarted)
+			return false;
 		
 		int count = 0;
 		Player winner = null;
-		for(ArenaPlayer p : players) {
-			if (p.isInGame) {
+		for(int i=0;i<players.size();i++) {
+			if (isInGame.get(i)) {
 				count++;
-				winner = p.player;
+				winner = players.get(i);
 			}
 		}
 		if (count == 1) {
 			congratWinner(winner);
 			endGame();
+			return true;
 		}else if (count == 0) {
 			endGame();
+			return true;
 		}
+		return false;
 	}
 	
 	public void endGame() {
+		
+		System.out.println("end game :"+players.size());
+		
 		for(Player p : getAllPlayers()) {
-			leaveArena(p);
+			bringBack(p);
 		}
+		
+		isStarted = true;
 		players.clear();
+		isInGame.clear();
 	}
 	
 	private void congratWinner(Player winner) {
@@ -404,9 +450,9 @@ public class Arena {
 		
 		if (players.contains(player)) {
 			if (specLoc == null)
-				leaveArena(player);
+				leaveArena(player,false);
 			else {
-				players.get(players.indexOf(player)).becomeSpec();
+				isInGame.set(players.indexOf(player),false);
 				player.teleport(specLoc);
 			}
 		}

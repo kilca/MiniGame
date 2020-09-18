@@ -207,7 +207,7 @@ public class ArenaManager {
 	public static void leaveArena(Player p) {
 		for(Arena a : arenas) {
 			if (a.players.contains(p))
-				a.leaveArena(p);
+				a.leaveArena(p,false);
 		}
 		
 	}

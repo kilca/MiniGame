@@ -152,7 +152,7 @@ public class CommandArena extends SubCommand {
 						return;	
 					}
 					
-					ar.leaveArena(player);
+					ar.leaveArena(player,true);
 					player.sendMessage("it now need "+ar.getNumberPlayerNeeded()+" more players");
 				}
 
