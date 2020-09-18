@@ -19,6 +19,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import poly.bedtech.ItemUtils;
+
 public class WeaponEvent implements Listener{
 	
 	@EventHandler
@@ -32,7 +34,7 @@ public class WeaponEvent implements Listener{
 		if (it.getItemMeta() == null)
 			return;
 		
-		CustomWeapon cw = WeaponManager.getWeaponByNameMaterial(it.getItemMeta().getDisplayName(), it.getType());
+		CustomWeapon cw = WeaponManager.getWeaponByNameMaterial(ItemUtils.getItemTag(it, "weaponName"), it.getType());
 		
 		if (cw == null)
 			return;
@@ -76,7 +78,13 @@ public class WeaponEvent implements Listener{
 		
 		if (item == null)
 			return;
-		String name = item.getItemMeta().getLocalizedName();
+		
+		String name = ItemUtils.getItemTag(item, "weaponName");
+		
+		//not a weapon
+		if (name == null)
+			return;
+		
 		CustomWeapon weapon = (CustomWeapon) WeaponManager.getWeaponByName(name);
 
 		if (weapon == null) {

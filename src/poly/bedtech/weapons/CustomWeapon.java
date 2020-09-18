@@ -19,6 +19,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import poly.bedtech.ItemUtils;
+
 public abstract class CustomWeapon{
 
 	//chiant a faire: autotarget / airstrike 
@@ -84,9 +86,10 @@ public abstract class CustomWeapon{
 		
 		
 		ItemStack item =  new ItemStack(material);
+		ItemUtils.setItemTag(item, "weaponName", weaponName);
+		
 		ItemMeta itemM = item.getItemMeta();
 		itemM.setDisplayName(translateColor(name));
-		itemM.setLocalizedName(weaponName);
 		if (!lore.isEmpty())
 			itemM.setLore(lore);
 		

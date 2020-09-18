@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import net.minecraft.server.v1_15_R1.PacketPlayInClientCommand;
 import net.minecraft.server.v1_15_R1.PacketPlayInClientCommand.EnumClientCommand;
+import poly.bedtech.ItemUtils;
 import poly.bedtech.MinGame;
 
 public class ArenaEvent implements Listener{
@@ -72,7 +73,10 @@ public class ArenaEvent implements Listener{
     	
     	Player p = event.getEntity();
     	
-    	
+		for(ItemStack i : event.getDrops()) {
+			if (ItemUtils.getItemTag(i,"weaponName") != null)
+				i.setAmount(0);
+		}
     	
     	Arena a = ArenaManager.getArena(p);
     	if (a != null) {
@@ -93,6 +97,14 @@ public class ArenaEvent implements Listener{
     	}
     
     }
+    
+    @EventHandler
+    public void onItemDrop (PlayerDropItemEvent e) {
+        if (ItemUtils.getItemTag(e.getItemDrop().getItemStack(),"weaponName") != null) {
+        	e.setCancelled(true);
+        }
+    }
+    
 
     
     

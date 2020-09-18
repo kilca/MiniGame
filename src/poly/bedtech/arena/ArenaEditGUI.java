@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
+import poly.bedtech.ItemUtils;
 import poly.bedtech.MinGame;
 import poly.bedtech.weapons.CustomWeapon;
 import poly.bedtech.weapons.WeaponManager;
@@ -227,11 +228,12 @@ public class ArenaEditGUI implements Listener {
 			return;
 		
 		//if is a weapon
-		if (!current.getItemMeta().getLocalizedName().isEmpty()) {
+		String weaponName = ItemUtils.getItemTag(current, "weaponName");
+		if (weaponName != null) {
 			
-			System.out.println("dans le if getLocalizedName");
+			System.out.println("dans le if");
 			
-			CustomWeapon weapon = WeaponManager.getWeaponByName(current.getItemMeta().getLocalizedName());
+			CustomWeapon weapon = WeaponManager.getWeaponByName(weaponName);
 			int index = weapon.getWeaponIndex();
 			
 			if (WeaponManager.weapons.size()-1 == index)
@@ -244,7 +246,7 @@ public class ArenaEditGUI implements Listener {
 			
 		}else {//other than a weapon
 		
-			//Todo Remplacer avec Localized Name
+			//Todo Remplacer avec Tag Name
 			switch (current.getItemMeta().getDisplayName()) {
 				case pos1Name:
 					ar.loc1 = player.getLocation();

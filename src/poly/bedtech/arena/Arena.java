@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -336,14 +337,26 @@ public class Arena {
 		
 		if (!isOpen) {
 			player.sendMessage("The arena is not open");
+			return;
 		}
 		if (isStarted) {
 			player.sendMessage("The game already started");
+			return;
 		}
 		
 		if (players.contains(player)) {
 			player.sendMessage("You are already in a team");
 			return;
+		}
+		
+		if (ArenaManager.getArena(player) != null) {
+			player.sendMessage("You are in other arena");
+			return;
+		}
+		
+		if (players.size() == 0) {
+			String msg = "&3"+player.getDisplayName()+" want to play :"+this.name+", do : &5/mg arena join "+this.name+"&3 to join";
+			MinGame.INSTANCE.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',msg));
 		}
 		
 		players.add(player);

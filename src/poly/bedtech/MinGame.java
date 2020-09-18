@@ -13,29 +13,29 @@ import poly.bedtech.weapons.WeaponManager;
  * 
  * Bug 1.16
  * 
- * Direct respawn lorsque l'arene est fini et j'ai gagné
- * (game already started ??)
+ * ?	Direct respawn lorsque l'arene est fini et j'ai gagné
+ * 		(game already started ??)
  * 
  * 
- * Item a détruire
+ * X	Item a détruire
  * 
  * 
  * X	Possibilité que l'affichage des barriere fasse laguer si trop gros
  * 
  * X	join arene meme si op
  * 
- * rejoindre arene alors que en cours (relance timer et tout)
+ * X?	rejoindre arene alors que en cours (relance timer et tout)
  * 
- * double timer
+ * ?	double timer
  * 
- * broadcast a tt le monde : truc a rejoin, faites ... pour rejoindre l'arene
+ * X	broadcast a tt le monde : truc a rejoin, faites ... pour rejoindre l'arene
  * 
  * 
- * Spawn des fois weapon not found
+ * X	Spawn des fois weapon not found
  * 
- * Rennommer arme marche
+ * X	Rennommer arme marche
  * 
- * bloquer le fait de rejoindre si déja rejoint autre arene
+ * X	bloquer le fait de rejoindre si déja rejoint autre arene
  * 
  * pas d'explosion
  * 
