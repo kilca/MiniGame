@@ -81,6 +81,9 @@ public class ArenaManager {
 			Location specLoc = null;
 			int minPlayer = cfg.getConfigurationSection("arenas").getInt(s+".minPlayer");
 			int maxPlayer = cfg.getConfigurationSection("arenas").getInt(s+".maxPlayer");
+			
+			int waitingTime = cfg.getConfigurationSection("arenas").getInt(s+".waitingTime");
+			
 			String weaponName = cfg.getConfigurationSection("arenas").getString(s+".weapon");
 			boolean isOpen = cfg.getConfigurationSection("arenas").getBoolean(s+".isOpen");
 			CustomWeapon weapon = WeaponManager.getWeaponByName(weaponName);
@@ -116,6 +119,7 @@ public class ArenaManager {
 			ar.specLoc = specLoc;
 			ar.minPlayer = minPlayer;
 			ar.maxPlayer = maxPlayer;
+			ar.waitingTime = waitingTime;
 			ar.weapon = weapon;
 			ar.isOpen = isOpen;
 			

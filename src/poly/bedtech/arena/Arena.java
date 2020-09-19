@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -55,6 +56,8 @@ public class Arena {
 	public Location specLoc;
 	
 	public List<ItemStack> weapons = new ArrayList<ItemStack>();
+	
+	public int waitingTime = 20;
 	
 	public Arena(String name, World world) {
 		
@@ -195,6 +198,8 @@ public class Arena {
 		ArenaManager.cfg.set(def+"minPlayer", minPlayer);
 		ArenaManager.cfg.set(def+"maxPlayer", maxPlayer);
 		
+		ArenaManager.cfg.set(def+"waitingTime", waitingTime);
+		
 		ArenaManager.cfg.set(def+"isOpen", isOpen);
 		
 		ArenaManager.cfg.set(def+"spawnlocs", null); 
@@ -259,11 +264,11 @@ public class Arena {
 		
 		Arena self = this;
 		borderRun = new BukkitRunnable() {
-			int count = 10;
+			int count = self.waitingTime;
 			
 			@Override
 			public void run() {
-		
+				
 				if (!canStartGame()) {
 					this.cancel();
 					return;
@@ -271,10 +276,12 @@ public class Arena {
 				
 				removeInexistentPlayer(self);
 			
-				
-				for(Player p : self.getAllPlayers()) {
-					p.sendMessage("game begin in :"+count);
+				if (count %5 == 0 || count < 5) {
+					for(Player p : self.getAllPlayers()) {
+						p.sendMessage("game begin in :"+count);
+					}
 				}
+				
 				count--;
 				if (count == 0) {
 					self.startGame();
@@ -314,6 +321,8 @@ public class Arena {
             
             savePlayerData(p);
             
+			p.setGameMode(GameMode.ADVENTURE);
+            
 			p.teleport(spawnLocs.get(j));
 			
 			p.getInventory().clear();
@@ -337,7 +346,8 @@ public class Arena {
 		MinGame.cfg.set("players."+p.getName()+".loc.y", l.getY());
 		MinGame.cfg.set("players."+p.getName()+".loc.z", l.getZ());
 		MinGame.cfg.set("players."+p.getName()+".loc.world", l.getWorld().getName());
-		
+	
+		MinGame.cfg.set("players."+p.getName()+".gamemode", p.getGameMode().name());
 		
 		try {
 			MinGame.cfg.save(MinGame.file);
@@ -417,6 +427,13 @@ public class Arena {
 			double x = MinGame.cfg.getDouble("players."+p.getName()+".loc.x");
 			double y = MinGame.cfg.getDouble("players."+p.getName()+".loc.y");
 			double z = MinGame.cfg.getDouble("players."+p.getName()+".loc.z");
+			
+			String gms = MinGame.cfg.getString("players."+p.getName()+".gamemode");
+			GameMode gm = null;
+			if (gms != null) {
+				gm = GameMode.valueOf(gms);
+			}
+			
 			String w = MinGame.cfg.getString("players."+p.getName()+".loc.world");
 			
 			if (x == 0 && y == 0 && z == 0) {
@@ -433,6 +450,10 @@ public class Arena {
 			else {
 				Location l = new Location(world,x,y,z);
 				p.teleport(l);
+			}
+			
+			if (gm != null) {
+				p.setGameMode(gm);
 			}
 			
 			MinGame.cfg.set("players."+p.getName(), "");
