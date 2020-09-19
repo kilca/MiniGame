@@ -1,5 +1,6 @@
 package poly.bedtech.arena;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -27,40 +30,48 @@ public class ArenaManager {
 	
 	private static List<Arena> arenas = new ArrayList<Arena>();
 	
+	public static FileConfiguration cfg;
+	
+	public static File file;
+	
 	//A Tester
 	public static void setupConfigs(MinGame lima) {
 		
+		
+		file = new File(lima.getDataFolder(),"arenas.yml");
+		cfg = YamlConfiguration.loadConfiguration(file);
+		
 		System.out.println("We setup the config");
 		
-		if (lima.getConfig().getConfigurationSection("arenas") == null) {
+		if (cfg.getConfigurationSection("arenas") == null) {
 			return;
 		}
 		
-		for(String s : lima.getConfig().getConfigurationSection("arenas").getKeys(false)) {
+		for(String s : cfg.getConfigurationSection("arenas").getKeys(false)) {
 			
 			String name = s;
 			World world;
 			Location l1 = null;
 			Location l2 = null;
 			
-			world = Bukkit.getServer().getWorld(lima.getConfig().getConfigurationSection("arenas").getString(s+".world"));
+			world = Bukkit.getServer().getWorld(cfg.getConfigurationSection("arenas").getString(s+".world"));
 			
-			
-			boolean haveLoc1 = lima.getConfig().getConfigurationSection("arenas").isSet(s+".loc1.x");
-			boolean haveLoc2 = lima.getConfig().getConfigurationSection("arenas").isSet(s+".loc2.x");
-			boolean haveSpecLoc = lima.getConfig().getConfigurationSection("arenas").isSet(s+".specLoc.x");
+		
+			boolean haveLoc1 = cfg.getConfigurationSection("arenas").isSet(s+".loc1.x");
+			boolean haveLoc2 = cfg.getConfigurationSection("arenas").isSet(s+".loc2.x");
+			boolean haveSpecLoc = cfg.getConfigurationSection("arenas").isSet(s+".specLoc.x");
 			
 			if (haveLoc1) {
-				double loc1x = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".loc1.x");
-				double loc1y = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".loc1.y");
-				double loc1z = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".loc1.z");
+				double loc1x = cfg.getConfigurationSection("arenas").getDouble(s+".loc1.x");
+				double loc1y = cfg.getConfigurationSection("arenas").getDouble(s+".loc1.y");
+				double loc1z = cfg.getConfigurationSection("arenas").getDouble(s+".loc1.z");
 				
 				l1 = new Location(world,loc1x,loc1y,loc1z);
 			}
 			if (haveLoc2) {
-				double loc2x = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".loc2.x");
-				double loc2y = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".loc2.y");
-				double loc2z = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".loc2.z");
+				double loc2x = cfg.getConfigurationSection("arenas").getDouble(s+".loc2.x");
+				double loc2y = cfg.getConfigurationSection("arenas").getDouble(s+".loc2.y");
+				double loc2z = cfg.getConfigurationSection("arenas").getDouble(s+".loc2.z");
 				
 				l2 = new Location(world,loc2x,loc2y,loc2z);
 			}
@@ -68,29 +79,29 @@ public class ArenaManager {
 			Arena ar = new Arena(name,l1,l2,world);
 			
 			Location specLoc = null;
-			int minPlayer = lima.getConfig().getConfigurationSection("arenas").getInt(s+".minPlayer");
-			int maxPlayer = lima.getConfig().getConfigurationSection("arenas").getInt(s+".maxPlayer");
-			String weaponName = lima.getConfig().getConfigurationSection("arenas").getString(s+".weapon");
-			boolean isOpen = lima.getConfig().getConfigurationSection("arenas").getBoolean(s+".isOpen");
+			int minPlayer = cfg.getConfigurationSection("arenas").getInt(s+".minPlayer");
+			int maxPlayer = cfg.getConfigurationSection("arenas").getInt(s+".maxPlayer");
+			String weaponName = cfg.getConfigurationSection("arenas").getString(s+".weapon");
+			boolean isOpen = cfg.getConfigurationSection("arenas").getBoolean(s+".isOpen");
 			CustomWeapon weapon = WeaponManager.getWeaponByName(weaponName);
 			
 			
 			if (haveSpecLoc) {
-				double loc2x = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".specLoc.x");
-				double loc2y = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".specLoc.y");
-				double loc2z = lima.getConfig().getConfigurationSection("arenas").getDouble(s+".specLoc.z");
+				double loc2x = cfg.getConfigurationSection("arenas").getDouble(s+".specLoc.x");
+				double loc2y = cfg.getConfigurationSection("arenas").getDouble(s+".specLoc.y");
+				double loc2z = cfg.getConfigurationSection("arenas").getDouble(s+".specLoc.z");
 				
 				specLoc = new Location(world,loc2x,loc2y,loc2z);
 			}
 			
 			//marche pas
 			List<Location> spawnLocs = new ArrayList<Location>();
-			if (lima.getConfig().getConfigurationSection("arenas."+s+".spawnlocs") != null) {
-				for(String s2 : lima.getConfig().getConfigurationSection("arenas."+s+".spawnlocs").getKeys(false))
+			if (cfg.getConfigurationSection("arenas."+s+".spawnlocs") != null) {
+				for(String s2 : cfg.getConfigurationSection("arenas."+s+".spawnlocs").getKeys(false))
 				{
-					double x = lima.getConfig().getConfigurationSection("arenas."+s+".spawnlocs").getDouble(s2+".x");
-					double y = lima.getConfig().getConfigurationSection("arenas."+s+".spawnlocs").getDouble(s2+".y");
-					double z = lima.getConfig().getConfigurationSection("arenas."+s+".spawnlocs").getDouble(s2+".z");
+					double x = cfg.getConfigurationSection("arenas."+s+".spawnlocs").getDouble(s2+".x");
+					double y = cfg.getConfigurationSection("arenas."+s+".spawnlocs").getDouble(s2+".y");
+					double z = cfg.getConfigurationSection("arenas."+s+".spawnlocs").getDouble(s2+".z");
 					
 					
 					spawnLocs.add(new Location(world,x,y,z));	
@@ -159,13 +170,16 @@ public class ArenaManager {
 	
 	public static void loadArena(Player p, Arena ar) {
 		
-		if (p != null && (ar.loc1 == null || ar.loc2 == null))
+		if (p != null && (ar.loc1 == null || ar.loc2 == null)) {
 			p.sendMessage("Error, location not defined");
+			return;
+		}
 		
 		Material[][][] m = StructureAPI.load(ar.name);
 		
 		if (p != null && m == null) {
-			p.sendMessage("schematic error");
+			p.sendMessage("schematic error, admin must save the arena before");
+			return;
 		}
 		
 		Location block = ar.loc1;
@@ -179,8 +193,9 @@ public class ArenaManager {
         Location tempLocation = new Location(ar.loc1.getWorld(),minX,minY,minZ);
         
 		StructureAPI.paste(m,tempLocation);
-		if (p != null)
+		if (p != null) {
 			p.sendMessage("arena loaded");
+		}
 	}
 	
 	

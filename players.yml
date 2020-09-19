@@ -1,0 +1,9 @@
+#Use space and not indent, be carefull with space with list
+
+#Here we store all player data before they join the game
+
+# ------------------------------ PLAYERS ------------------------
+
+players:
+  
+  

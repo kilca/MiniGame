@@ -1,5 +1,7 @@
 package poly.bedtech.arena;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,45 +169,53 @@ public class Arena {
 		
 		String def = "arenas."+name+".";
 		
-		limInstance.getConfig().set(def+"name", this.name);
+		ArenaManager.cfg.set(def+"name", this.name);
 		
-		limInstance.getConfig().set(def+"world", this.world.getName());
+		ArenaManager.cfg.set(def+"world", this.world.getName());
 		
 		if (loc1 != null) {
-			limInstance.getConfig().set(def+"loc1.x", loc1.getX());
-			limInstance.getConfig().set(def+"loc1.y", loc1.getY());
-			limInstance.getConfig().set(def+"loc1.z", loc1.getZ());
+			ArenaManager.cfg.set(def+"loc1.x", loc1.getX());
+			ArenaManager.cfg.set(def+"loc1.y", loc1.getY());
+			ArenaManager.cfg.set(def+"loc1.z", loc1.getZ());
 		}
 		if (loc2 != null) {
-			limInstance.getConfig().set(def+"loc2.x", loc2.getX());
-			limInstance.getConfig().set(def+"loc2.y", loc2.getY());
-			limInstance.getConfig().set(def+"loc2.z", loc2.getZ());
+			ArenaManager.cfg.set(def+"loc2.x", loc2.getX());
+			ArenaManager.cfg.set(def+"loc2.y", loc2.getY());
+			ArenaManager.cfg.set(def+"loc2.z", loc2.getZ());
 		}
 
 		if (specLoc != null) {
-			limInstance.getConfig().set(def+"specLoc.x", specLoc.getX());
-			limInstance.getConfig().set(def+"specLoc.y", specLoc.getY());
-			limInstance.getConfig().set(def+"specLoc.z", specLoc.getZ());
+			ArenaManager.cfg.set(def+"specLoc.x", specLoc.getX());
+			ArenaManager.cfg.set(def+"specLoc.y", specLoc.getY());
+			ArenaManager.cfg.set(def+"specLoc.z", specLoc.getZ());
 		}
 		
-		limInstance.getConfig().set(def+"weapon", weapon.weaponName);
+		ArenaManager.cfg.set(def+"weapon", weapon.weaponName);
 		
-		limInstance.getConfig().set(def+"minPlayer", minPlayer);
-		limInstance.getConfig().set(def+"maxPlayer", maxPlayer);
+		ArenaManager.cfg.set(def+"minPlayer", minPlayer);
+		ArenaManager.cfg.set(def+"maxPlayer", maxPlayer);
 		
-		limInstance.getConfig().set(def+"isOpen", isOpen);
+		ArenaManager.cfg.set(def+"isOpen", isOpen);
 		
-		limInstance.getConfig().set(def+"spawnlocs", null); 
+		ArenaManager.cfg.set(def+"spawnlocs", null); 
 		
 		for(int i=0;i<spawnLocs.size();i++) {
 			
 			Location l = spawnLocs.get(i);
-			limInstance.getConfig().set(def+"spawnlocs."+i+".x", l.getX());
-			limInstance.getConfig().set(def+"spawnlocs."+i+".y", l.getY());
-			limInstance.getConfig().set(def+"spawnlocs."+i+".z", l.getZ());
+			ArenaManager.cfg.set(def+"spawnlocs."+i+".x", l.getX());
+			ArenaManager.cfg.set(def+"spawnlocs."+i+".y", l.getY());
+			ArenaManager.cfg.set(def+"spawnlocs."+i+".z", l.getZ());
 		}
 		
-		limInstance.saveConfig();
+		
+		try {
+			ArenaManager.cfg.save(ArenaManager.file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		};
+		
+		
 		
 	}
 	
@@ -320,18 +330,34 @@ public class Arena {
 	
 	private void savePlayerData(Player p) {
 		
-		MinGame limInstance = MinGame.INSTANCE;
-		limInstance.getConfig().set("players."+p.getName()+".inventory.content", p.getInventory().getContents());
+
+		MinGame.cfg.set("players."+p.getName()+".inventory.content", p.getInventory().getContents());
 		Location l = p.getLocation();
-		limInstance.getConfig().set("players."+p.getName()+".loc.x", l.getX());
-		limInstance.getConfig().set("players."+p.getName()+".loc.y", l.getY());
-		limInstance.getConfig().set("players."+p.getName()+".loc.z", l.getZ());
-		limInstance.getConfig().set("players."+p.getName()+".loc.world", l.getWorld().getName());
+		MinGame.cfg.set("players."+p.getName()+".loc.x", l.getX());
+		MinGame.cfg.set("players."+p.getName()+".loc.y", l.getY());
+		MinGame.cfg.set("players."+p.getName()+".loc.z", l.getZ());
+		MinGame.cfg.set("players."+p.getName()+".loc.world", l.getWorld().getName());
 		
 		
-		limInstance.saveConfig();
+		try {
+			MinGame.cfg.save(MinGame.file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		};
+		
+		//todo save config
+		
+		//limInstance.saveConfig();
 	}
 	
+	private boolean isConfig() {
+		
+		File f = new File(MinGame.INSTANCE.getDataFolder() + "/schematics/"+ name + ".schem");
+		boolean fileExist = f.exists();
+		return (spawnLocs.size() != 0 && loc1 != null && loc2 != null && fileExist);
+		
+	}
 	
 	public void joinArena(Player player) {
 		
@@ -354,10 +380,17 @@ public class Arena {
 			return;
 		}
 		
+		if (!isConfig()) {
+			player.sendMessage("The configuration of the arene is incomplete, contact an admin");
+			return;
+		}
+		
 		if (players.size() == 0) {
 			String msg = "&3"+player.getDisplayName()+" want to play :"+this.name+", do : &5/mg arena join "+this.name+"&3 to join";
 			MinGame.INSTANCE.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&',msg));
 		}
+		
+		removeInexistentPlayer(this);
 		
 		players.add(player);
 		isInGame.add(false);
@@ -372,21 +405,19 @@ public class Arena {
 		
 		System.out.println("we bring back :"+p.getName());
 		
-		MinGame limInstance = MinGame.INSTANCE;
-		
-		ItemStack[] contents = (ItemStack[]) MinGame.INSTANCE.getConfig().get("players."+p.getName()+".inventory.content");
+		ItemStack[] contents = (ItemStack[]) MinGame.cfg.get("players."+p.getName()+".inventory.content");
 		if (contents == null) {
 			p.sendMessage("Sorry, Can't retrieve your stuff");
 		}else {
 			p.getInventory().setContents(contents);	
 		}
 		
-		if (limInstance.getConfig().contains("players."+p.getName()+".loc.x")) {
+		if (MinGame.cfg.contains("players."+p.getName()+".loc.x")) {
 				
-			double x = limInstance.getConfig().getDouble("players."+p.getName()+".loc.x");
-			double y = limInstance.getConfig().getDouble("players."+p.getName()+".loc.y");
-			double z = limInstance.getConfig().getDouble("players."+p.getName()+".loc.z");
-			String w = limInstance.getConfig().getString("players."+p.getName()+".loc.world");
+			double x = MinGame.cfg.getDouble("players."+p.getName()+".loc.x");
+			double y = MinGame.cfg.getDouble("players."+p.getName()+".loc.y");
+			double z = MinGame.cfg.getDouble("players."+p.getName()+".loc.z");
+			String w = MinGame.cfg.getString("players."+p.getName()+".loc.world");
 			
 			if (x == 0 && y == 0 && z == 0) {
 				p.sendMessage("Sorry, can't find your old location");
@@ -394,7 +425,7 @@ public class Arena {
 			if (w == null || w == "")
 				w = "world";
 			
-			World world = limInstance.getServer().getWorld(w);
+			World world = MinGame.INSTANCE.getServer().getWorld(w);
 			if (world == null) {
 				System.err.println("Error, world :"+w+", not found for :"+p.getName());
 				p.sendMessage("Error, old world not found");
@@ -404,13 +435,13 @@ public class Arena {
 				p.teleport(l);
 			}
 			
-			limInstance.getConfig().set("players."+p.getName(), "");
+			MinGame.cfg.set("players."+p.getName(), "");
 		}else {
 			p.sendMessage("Sorry didn't find your data");
 		}
 		
-		limInstance.saveConfig();
-		
+		//limInstance.saveConfig();
+		//todo
 	}
 	
 	public void leaveArena(Player player, boolean byCommand) {
@@ -464,7 +495,7 @@ public class Arena {
 			bringBack(p);
 		}
 		
-		isStarted = true;
+		isStarted = false;
 		players.clear();
 		isInGame.clear();
 	}

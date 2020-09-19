@@ -1,5 +1,9 @@
 package poly.bedtech;
 
+import java.io.File;
+
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import poly.bedtech.arena.ArenaEditGUI;
@@ -68,6 +72,12 @@ public class MinGame extends JavaPlugin {
 	
     public static MinGame INSTANCE;
 	
+    
+    //---Player
+    
+	public static FileConfiguration cfg;
+	public static File file;
+    
     private void initListeners() {
     	
     	getServer().getPluginManager().registerEvents(new ArenaEditGUI(), this);
@@ -77,6 +87,12 @@ public class MinGame extends JavaPlugin {
     /*
      * Item (baaseball) not found
      * */
+    
+    private void loadPlayerFile() {
+		file = new File(this.getDataFolder(),"players.yml");
+		cfg = YamlConfiguration.loadConfiguration(file);
+    	
+    }
     
 	@Override
 	public void onEnable() {
@@ -91,6 +107,7 @@ public class MinGame extends JavaPlugin {
 		//l'ordre est important
 		WeaponManager.loadWeapons(this);
 		ArenaManager.setupConfigs(this);
+		loadPlayerFile();
 		
 		CommandMG cl = new CommandMG();
 		cl.setup();
