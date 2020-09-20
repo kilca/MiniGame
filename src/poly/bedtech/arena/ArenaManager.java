@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import net.md_5.bungee.api.ChatColor;
 import poly.bedtech.MinGame;
 import poly.bedtech.StructureAPI;
 import poly.bedtech.weapons.CustomWeapon;
@@ -139,10 +140,16 @@ public class ArenaManager {
 		
 	}
 	
+	
+	private static String tc(String s) {
+		return ChatColor.translateAlternateColorCodes('&', s);
+	}
+	
 	public static void giveList(CommandSender sender) {
 		
+		sender.sendMessage(tc("&e-------- &2MiniGame Arena list &e----------"));
 		for(int i=0;i<arenas.size();i++) {
-			sender.sendMessage(i+")"+arenas.get(i).getName());
+			sender.sendMessage(tc("&b"+i+") &a"+arenas.get(i).getName()));
 			
 		}
 		

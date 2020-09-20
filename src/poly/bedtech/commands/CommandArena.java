@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import net.md_5.bungee.api.ChatColor;
 import poly.bedtech.arena.Arena;
 import poly.bedtech.arena.ArenaEditGUI;
 import poly.bedtech.arena.ArenaManager;
@@ -17,6 +18,10 @@ import poly.bedtech.arena.ArenaManager;
 public class CommandArena extends SubCommand {
 
 	private Player player;
+	
+	private String tc(String s) {
+		return ChatColor.translateAlternateColorCodes('&', s);
+	}
 	
 	public void callSubCommand(CommandSender sender, String[] args) {
 		
@@ -37,8 +42,8 @@ public class CommandArena extends SubCommand {
 			
 		//System.out.println(args[0]);
 			
-		if (!sender.hasPermission("mg.*")) {
-			if (!sender.hasPermission("mg.arena."+arg0) && !sender.hasPermission("mg.command.*")){
+		if (!sender.hasPermission("mg.*") && !sender.isOp()) {
+			if (!sender.hasPermission("mg.arena."+arg0) && !sender.hasPermission("mg.arena.*")){
 				sender.sendMessage("You do not have permission to perform this command");
 				return;
 			}
@@ -47,14 +52,14 @@ public class CommandArena extends SubCommand {
 		switch(arg0) {
 		
 			case "help":
-				sender.sendMessage("list");
-				sender.sendMessage("create [name]");
-				sender.sendMessage("edit [name]");
-				sender.sendMessage("edititem [name]");
-				sender.sendMessage("remove [name]");
-				
-				sender.sendMessage("join [name]");
-				sender.sendMessage("leave [name]");
+				sender.sendMessage(tc("&e-------- &9MiniGame arena &e----------"));
+				sender.sendMessage(tc("&6/mg arena list"));
+				sender.sendMessage(tc("&6/mg arena create &3[name]"));
+				sender.sendMessage(tc("&6/mg arena edit &3[name]"));
+				sender.sendMessage(tc("&6/mg arena edititem &3[name]"));
+				sender.sendMessage(tc("&6/mg arena remove &3[name]"));
+				sender.sendMessage(tc("&6/mg arena join &3[name]"));
+				sender.sendMessage(tc("&6/mg arena leave &3[name]"));
 			break;
 		
 			case "list":
@@ -63,11 +68,6 @@ public class CommandArena extends SubCommand {
 				break;
 		
 			case "create":
-				
-				if (!player.isOp()) {
-					player.sendMessage("You need to be op to perform this command");
-					return;
-				}
 				
 				if (arg1 != null) {
 					if (ArenaManager.addArena(new Arena(arg1,player.getWorld()))) {

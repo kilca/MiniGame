@@ -5,6 +5,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import net.md_5.bungee.api.ChatColor;
 import poly.bedtech.MinGame;
 import poly.bedtech.arena.Arena;
 import poly.bedtech.arena.ArenaEditGUI;
@@ -14,7 +15,10 @@ import poly.bedtech.weapons.WeaponManager;
 public class CommandWeapon extends SubCommand  {
 
 private Player player;
-	
+	private String tc(String s) {
+		return ChatColor.translateAlternateColorCodes('&', s);
+	}
+
 	public void callSubCommand(CommandSender sender, String[] args) {
 		
 		System.out.println("dans le callsub de arena");
@@ -36,7 +40,7 @@ private Player player;
 			System.out.println(args[0]);
 		
 
-		if (!sender.hasPermission("mg.*")) {
+		if (!sender.hasPermission("mg.*") && !sender.isOp()) {
 			if (!sender.hasPermission("mg.weapon."+arg0) && !sender.hasPermission("mg.weapon.*")) {
 				sender.sendMessage("You do not have permission to perform this command");
 				return;
@@ -46,11 +50,12 @@ private Player player;
 		switch(arg0) {
 		
 			case "help":
-				sender.sendMessage("list");
-				sender.sendMessage("give [item]");
+				sender.sendMessage(tc("&e-------- &9MiniGame weapon &e----------"));
+				sender.sendMessage(tc("&6/mg weapon list"));
+				sender.sendMessage(tc("&6/mg weapon give &3[item]"));
 				break;
 			case "list":
-				WeaponManager.showItemList(player);
+				WeaponManager.showItemList(sender);
 				break;
 			case "give":
 				if (arg1 != null) {

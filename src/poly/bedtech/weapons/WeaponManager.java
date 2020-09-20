@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,6 +21,7 @@ import org.bukkit.entity.WitherSkull;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
+import net.md_5.bungee.api.ChatColor;
 import poly.bedtech.ItemUtils;
 import poly.bedtech.MinGame;
 
@@ -65,11 +67,15 @@ public class WeaponManager {
 		
 	}
 	
-	public static void showItemList(Player p) {
-		
+	private static String tc(String s) {
+		return ChatColor.translateAlternateColorCodes('&', s);
+	}
+	
+	public static void showItemList(CommandSender p) {
+		p.sendMessage(tc("&e-------- &2MiniGame weapon list &e----------"));
 		for(int i=0;i<WeaponManager.weapons.size();i++) {
 			
-			p.sendMessage(i+")"+WeaponManager.weapons.get(i).weaponName);
+			p.sendMessage(tc("&b"+i+") &a"+WeaponManager.weapons.get(i).weaponName));
 			
 		}
 		
