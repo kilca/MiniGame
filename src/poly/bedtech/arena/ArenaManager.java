@@ -149,8 +149,11 @@ public class ArenaManager {
 		
 		sender.sendMessage(tc("&e-------- &2MiniGame Arena list &e----------"));
 		for(int i=0;i<arenas.size();i++) {
+			if (arenas.get(i).isOpen) {
 			sender.sendMessage(tc("&b"+i+") &a"+arenas.get(i).getName()));
-			
+			}else {
+			sender.sendMessage(tc("&b"+i+") &c"+arenas.get(i).getName()));
+			}
 		}
 		
 	}
