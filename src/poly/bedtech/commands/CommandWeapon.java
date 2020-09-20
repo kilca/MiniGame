@@ -36,6 +36,12 @@ private Player player;
 			System.out.println(args[0]);
 		
 
+		if (!sender.hasPermission("mg.*")) {
+			if (!sender.hasPermission("mg.weapon."+arg0) && !sender.hasPermission("mg.weapon.*")) {
+				sender.sendMessage("You do not have permission to perform this command");
+				return;
+			}
+		}
 			
 		switch(arg0) {
 		

@@ -1,7 +1,7 @@
 package poly.bedtech.arena;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,8 +13,8 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
-import net.minecraft.server.v1_15_R1.PacketPlayInClientCommand;
-import net.minecraft.server.v1_15_R1.PacketPlayInClientCommand.EnumClientCommand;
+import net.minecraft.server.v1_16_R2.PacketPlayInClientCommand;
+import net.minecraft.server.v1_16_R2.PacketPlayInClientCommand.EnumClientCommand;
 import poly.bedtech.ItemUtils;
 import poly.bedtech.MinGame;
 

@@ -59,10 +59,12 @@ public class WeaponEvent implements Listener{
 		//si projectile
 		if(event.getCause() == DamageCause.PROJECTILE) {
 			//todo plus de cas
-		    Snowball a = (Snowball) event.getDamager();
-		    if(a.getShooter() instanceof Player) {
-		        player = (Player) a.getShooter();
-		    }
+			if (event.getDamager() instanceof Snowball) {
+			    Snowball a = (Snowball) event.getDamager();
+			    if(a.getShooter() instanceof Player) {
+			        player = (Player) a.getShooter();
+			    }
+			}
 		//sinon
 		}else if ((event.getDamager() instanceof Player)){
 			player = (Player) event.getDamager();

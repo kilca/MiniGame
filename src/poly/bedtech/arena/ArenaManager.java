@@ -11,12 +11,8 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
-import net.minecraft.server.v1_15_R1.EntityFox.i;
 import poly.bedtech.MinGame;
 import poly.bedtech.StructureAPI;
 import poly.bedtech.weapons.CustomWeapon;

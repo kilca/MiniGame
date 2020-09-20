@@ -6,4 +6,4 @@ api-version: 1.13
 commands:
   mg:
     description: MinGame command
-    permission: lima.use
+    permission: mg.use

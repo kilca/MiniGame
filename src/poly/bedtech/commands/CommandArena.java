@@ -35,7 +35,14 @@ public class CommandArena extends SubCommand {
 		if (args.length > 1)
 			arg1 = args[1];
 			
-			System.out.println(args[0]);
+		//System.out.println(args[0]);
+			
+		if (!sender.hasPermission("mg.*")) {
+			if (!sender.hasPermission("mg.arena."+arg0) && !sender.hasPermission("mg.command.*")){
+				sender.sendMessage("You do not have permission to perform this command");
+				return;
+			}
+		}
 			
 		switch(arg0) {
 		
@@ -51,7 +58,8 @@ public class CommandArena extends SubCommand {
 			break;
 		
 			case "list":
-				ArenaManager.giveList(sender);
+				
+					ArenaManager.giveList(sender);
 				break;
 		
 			case "create":

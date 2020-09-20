@@ -52,7 +52,7 @@ public class CommandMG implements CommandExecutor{
 
 		}else {
 			
-			sender.sendMessage(ChatColor.RED+"Wrong command : try [arena]/[weapon] help");	
+			sender.sendMessage(ChatColor.RED+"Wrong command : /mg [arena/weapon] help");	
 		}
 		
 		
